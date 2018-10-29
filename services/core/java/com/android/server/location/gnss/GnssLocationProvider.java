@@ -1730,6 +1730,11 @@ public class GnssLocationProvider extends AbstractLocationProvider implements
             return;
         }
 
+        /*
+         * We don't want to tell Google our IMSI or phone number to spy on us!
+         * As devices w/o SIM card also have working GPS, providing this data does
+         * not seem to add a lot of value, at least not for the device holder
+         *
         int subId = SubscriptionManager.getDefaultDataSubscriptionId();
         if (isEmergency && mNetworkConnectivityHandler.getActiveSubId() >= 0) {
             subId = mNetworkConnectivityHandler.getActiveSubId();
@@ -1749,7 +1754,7 @@ public class GnssLocationProvider extends AbstractLocationProvider implements
                 // This means the framework has the SIM card.
                 type = AGPS_SETID_TYPE_MSISDN;
             }
-        }
+        } */
 
         mGnssNative.setAgpsSetId(type, (setId == null) ? "" : setId);
     }
