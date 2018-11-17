@@ -23,4 +23,9 @@
     <!-- Boost framework flag -->
     <java-symbol type="bool" name="config_supportsBoostFramework" />
 
+    <!-- Powermenu animations -->
+    <java-symbol type="style" name="GlobalActionsAnimation" />
+    <java-symbol type="style" name="GlobalActionsAnimationTop" />
+    <java-symbol type="style" name="GlobalActionsAnimationEnter" />
+
 </resources>
