@@ -6202,6 +6202,12 @@ public final class Settings {
          */
         public static final String SMART_CHARGING = "smart_charging";
 
+			/**
+         * FOD pressed color
+         * @hide
+         */
+        public static final String UDFPS_COLOR = "udfps_color";
+
         /**
          * @hide
          */
