@@ -185,4 +185,7 @@
   <java-symbol type="string" name="config_batterymeterLandBoltPathStyleB" />
   <java-symbol type="string" name="config_batterymeterLandPowersavePathStyleB" />
   <java-symbol type="string" name="config_batterymeterLandErrorPerimeterPathStyleB" />
+  
+  <!-- Default UDFPS pressed icon -->
+    <java-symbol type="integer" name="config_udfps_pressed_color" />
 </resources>
