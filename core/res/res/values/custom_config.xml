@@ -1,0 +1,7 @@
+<resources>
+
+    <!-- Smart cutoff -->
+    <integer name="config_smartCutoffTemperature">42</integer>
+    <integer name="config_smartCutoffResumeTemperature">38</integer>
+
+</resources>
