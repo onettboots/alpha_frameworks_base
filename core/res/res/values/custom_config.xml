@@ -3,4 +3,8 @@
     <!-- Boost Framework -->
     <bool name="config_supportsBoostFramework">false</bool>
 
+    <!-- Smart cutoff -->
+    <integer name="config_smartCutoffTemperature">42</integer>
+    <integer name="config_smartCutoffResumeTemperature">38</integer>
+
 </resources>
