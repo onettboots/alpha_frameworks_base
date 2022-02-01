@@ -4,4 +4,8 @@
     <integer name="config_smartCutoffTemperature">42</integer>
     <integer name="config_smartCutoffResumeTemperature">38</integer>
 
+     <!-- List of system apps that are allowed to be locked with app lock.
+     Use with extreme caution. -->
+     <string-array name="config_appLockAllowedSystemApps" translatable="false" />
+
 </resources>
