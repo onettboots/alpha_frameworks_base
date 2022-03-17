@@ -4,4 +4,8 @@
     <java-symbol type="integer" name="config_smartCutoffTemperature" />
     <java-symbol type="integer" name="config_smartCutoffResumeTemperature" />
 
+    <!-- Settings Restart -->
+    <java-symbol type="string" name="settings_restart_title" />
+    <java-symbol type="string" name="settings_restart_message" />
+
 </resources>
