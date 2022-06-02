@@ -133,6 +133,8 @@ public class PackageInstallerActivity extends AlertActivity {
 
     // Would the mOk button be enabled if this activity would be resumed
     private boolean mEnableOk = false;
+    private boolean mPermissionResultWasSet;
+    private boolean mAllowNextOnPause;
     private CheckBox mGrantInternetPermission;
 
     private void startInstallConfirm(PackageInfo oldInfo) {
@@ -323,6 +325,7 @@ public class PackageInstallerActivity extends AlertActivity {
     protected void onCreate(Bundle icicle) {
         if (mLocalLOGV) Log.i(TAG, "creating for user " + getUserId());
         getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
+        getWindow().setCloseOnTouchOutside(false);
 
         super.onCreate(null);
 
@@ -415,6 +418,24 @@ public class PackageInstallerActivity extends AlertActivity {
             // Don't allow the install button to be clicked as there might be overlays
             mOk.setEnabled(false);
         }
+        // sometimes this activity becomes hidden after onPause(),
+        // and the user is unable to bring it back
+        if (!mPermissionResultWasSet && mSessionId != -1) {
+            if (mAllowNextOnPause) {
+                mAllowNextOnPause = false;
+            } else {
+                if (!isFinishing()) {
+                    finish();
+                }
+            }
+        }
+    }
+
+    // handles startActivity() calls too
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
+        mAllowNextOnPause = true;
+        super.startActivityForResult(intent, requestCode, options);
     }
 
     @Override
@@ -430,6 +451,9 @@ public class PackageInstallerActivity extends AlertActivity {
         while (!mActiveUnknownSourcesListeners.isEmpty()) {
             unregister(mActiveUnknownSourcesListeners.get(0));
         }
+        if (!mPermissionResultWasSet) {
+            mInstaller.setPermissionsResult(mSessionId, false);
+        }
     }
 
     private void bindUi() {
@@ -443,6 +467,7 @@ public class PackageInstallerActivity extends AlertActivity {
 
                         if (mSessionId != -1) {
                             mInstaller.setPermissionsResult(mSessionId, true);
+                            mPermissionResultWasSet = true;
                             finish();
                         } else {
                             startInstall();
@@ -455,6 +480,7 @@ public class PackageInstallerActivity extends AlertActivity {
                     setResult(RESULT_CANCELED);
                     if (mSessionId != -1) {
                         mInstaller.setPermissionsResult(mSessionId, false);
+                        mPermissionResultWasSet = true;
                     }
                     finish();
                 }, null);
@@ -626,6 +652,7 @@ public class PackageInstallerActivity extends AlertActivity {
     public void onBackPressed() {
         if (mSessionId != -1) {
             mInstaller.setPermissionsResult(mSessionId, false);
+            mPermissionResultWasSet = true;
         }
         super.onBackPressed();
     }
