@@ -88,5 +88,6 @@ public class SystemSettings {
         Settings.System.ALARM_ALERT,
         Settings.System.NOTIFICATION_LIGHT_PULSE,
         Settings.System.MAX_VISIBLE_NOTIFICATION_ICONS,
+        Settings.System.QS_PANEL_STYLE
     };
 }
