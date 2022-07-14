@@ -4404,6 +4404,10 @@ class Task extends TaskFragment {
      * @return Whether the force hidden state changed
      */
     boolean setForceHidden(int flags, boolean set) {
+        return setForceHidden(flags, set, true /*moveToBack*/);
+    }
+
+    boolean setForceHidden(int flags, boolean set, boolean moveToBack) {
         int newFlags = mForceHiddenFlags;
         if (set) {
             newFlags |= flags;
@@ -4420,7 +4424,7 @@ class Task extends TaskFragment {
         final boolean nowHidden = isForceHidden();
         if (wasHidden != nowHidden) {
             final String reason = "setForceHidden";
-            if (wasVisible && nowHidden) {
+            if (wasVisible && nowHidden && moveToBack) {
                 // Move this visible task to back when the task is forced hidden
                 moveToBack(reason, null);
             } else if (isAlwaysOnTop()) {
