@@ -1063,6 +1063,18 @@
             android:permission="android.permission.CUSTOMIZE_SYSTEM_UI"
             />
 
+        <activity
+            android:name=".ErrorReportActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault.DayNight"
+            android:documentLaunchMode="always"
+            android:process=":ui"
+        >
+            <intent-filter>
+                <action android:name="android.intent.action.APP_ERROR" />
+            </intent-filter>
+        </activity>
+
         <receiver android:name="com.android.settingslib.wifi.WifiTimeoutReceiver"
             android:exported="true">
             <intent-filter>
