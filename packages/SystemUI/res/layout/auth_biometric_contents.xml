@@ -81,6 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
         android:textSize="12sp"
         android:gravity="center_horizontal"
         android:accessibilityLiveRegion="polite"
