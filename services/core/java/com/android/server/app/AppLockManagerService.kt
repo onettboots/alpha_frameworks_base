@@ -607,7 +607,7 @@ class AppLockManagerService(
      * in locked state.
      *
      * @param packageName the package name.
-     * @param secure true to hide notification content.
+     * @param shouldRedactNotification true to hide notification content.
      * @param userId the user id of the caller.
      * @throws [SecurityException] if caller does not have permission
      *     [Manifest.permissions.MANAGE_APP_LOCK].
@@ -615,7 +615,7 @@ class AppLockManagerService(
     @RequiresPermission(Manifest.permission.MANAGE_APP_LOCK)
     override fun setShouldRedactNotification(
         packageName: String,
-        secure: Boolean,
+        shouldRedactNotification: Boolean,
         userId: Int,
     ) {
         logD {
@@ -630,10 +630,12 @@ class AppLockManagerService(
                         "user id $actualUserId")
                     return@withLock
                 }
-                if (!config.setShouldRedactNotification(packageName, secure)) return@withLock
+                if (!config.setShouldRedactNotification(packageName, shouldRedactNotification)) {
+                    return@withLock
+                }
                 val isLocked = !unlockedPackages.contains(packageName)
                     && !topPackages.contains(packageName)
-                val shouldSecureContent = secure && isLocked
+                val shouldSecureContent = shouldRedactNotification && isLocked
                 notificationManagerInternal.updateSecureNotifications(
                     packageName,
                     shouldSecureContent,

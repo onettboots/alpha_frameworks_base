@@ -18,6 +18,7 @@ package com.android.server.app
 
 import android.app.AppLockData
 import android.app.AppLockManager.DEFAULT_BIOMETRICS_ALLOWED
+import android.app.AppLockManager.DEFAULT_REDACT_NOTIFICATION
 import android.app.AppLockManager.DEFAULT_TIMEOUT
 import android.os.FileUtils
 import android.os.FileUtils.S_IRWXU
@@ -79,7 +80,16 @@ internal class AppLockConfig(dataDir: File) {
      * @return true if package was added, false if already exists.
      */
     fun addPackage(packageName: String): Boolean {
-        return appLockDataMap.put(packageName, AppLockData(packageName, false)) == null
+        return if (!isPackageProtected(packageName)) {
+            appLockDataMap[packageName] =
+                AppLockData(
+                    packageName,
+                    DEFAULT_REDACT_NOTIFICATION
+                )
+            true
+        } else {
+            false
+        }
     }
 
     /**
@@ -115,18 +125,22 @@ internal class AppLockConfig(dataDir: File) {
      * in [appLockDataMap].
      *
      * @param packageName the package name of the application.
+     * @param shouldRedactNotification whether to redact notification or not.
      * @return true if config was changed, false otherwise.
      */
-    fun setShouldRedactNotification(packageName: String, secure: Boolean): Boolean {
+    fun setShouldRedactNotification(packageName: String, shouldRedactNotification: Boolean): Boolean {
         return appLockDataMap[packageName]?.let {
-            appLockDataMap[packageName] = AppLockData(
-                it.packageName,
-                secure
-            )
-            true
+            if (it.shouldRedactNotification != shouldRedactNotification) {
+                appLockDataMap[packageName] = AppLockData(
+                    it.packageName,
+                    shouldRedactNotification,
+                )
+                true
+            } else {
+                false
+            }
         } ?: run {
-            Slog.e(TAG, "Attempt to set secure " +
-                "notification field for package that is not in list")
+            Slog.e(TAG, "Attempt to redact notifications for package $packageName that is not in list")
             false
         }
     }
@@ -157,7 +171,9 @@ internal class AppLockConfig(dataDir: File) {
                 val rootObject = JSONObject(it.readText())
 
                 val version = rootObject.optInt(KEY_VERSION, 0)
-                migrateData(rootObject, version)
+                if (version != CURRENT_VERSION) {
+                    migrateData(rootObject, version)
+                }
 
                 appLockTimeout = rootObject.optLong(KEY_TIMEOUT, DEFAULT_TIMEOUT)
                 biometricsAllowed = rootObject.optBoolean(KEY_BIOMETRICS_ALLOWED, DEFAULT_BIOMETRICS_ALLOWED)
@@ -207,6 +223,24 @@ internal class AppLockConfig(dataDir: File) {
                     jsonData.put(KEY_APP_LOCK_DATA_LIST, appLockDataList)
                 }
             }
+            1 -> {
+                val appLockDataList = jsonData.optJSONArray(KEY_APP_LOCK_DATA_LIST)
+                if (appLockDataList != null) {
+                    val size = appLockDataList.length()
+                    if (size > 0) {
+                        val backupList = mutableListOf<JSONObject>()
+                        for (i in (size - 1)..0) {
+                            val appData = appLockDataList.getJSONObject(i)
+                            backupList.add(appData)
+                            appLockDataList.remove(i)
+                        }
+                        backupList.forEach {
+                            appLockDataList.put(it)
+                        }
+                        jsonData.put(KEY_APP_LOCK_DATA_LIST, appLockDataList)
+                    }
+                }
+            }
             else -> throw IllegalArgumentException("Unknown data version $dataVersion")
         }
         val nextVersion = dataVersion + 1
@@ -219,8 +253,12 @@ internal class AppLockConfig(dataDir: File) {
      * Write contents to [appLockConfigFile].
      */
     fun write() {
+        logD {
+            "Writing data to file"
+        }
         val rootObject = JSONObject()
         try {
+            rootObject.put(KEY_VERSION, CURRENT_VERSION)
             rootObject.put(KEY_TIMEOUT, appLockTimeout)
             rootObject.put(KEY_BIOMETRICS_ALLOWED, biometricsAllowed)
             rootObject.put(
@@ -241,6 +279,9 @@ internal class AppLockConfig(dataDir: File) {
         try {
             appLockConfigFile.outputStream().bufferedWriter().use {
                 val flattenedString = rootObject.toString(4)
+                logD {
+                    "flattenedString = $flattenedString"
+                }
                 it.write(flattenedString, 0, flattenedString.length)
                 it.flush()
             }
