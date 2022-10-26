@@ -12212,6 +12212,13 @@ public final class Settings {
         public static final String GMS_ENABLED = "gms_enabled";
 
         /**
+         *  Toggle the media squiggle animation
+         *  0 = 0ff, 1 = on
+         * @hide
+         */
+        public static final String SHOW_MEDIA_SQUIGGLE_ANIMATION = "show_media_squiggle_animation";
+
+        /**
          * These entries are considered common between the personal and the managed profile,
          * since the managed profile doesn't get to change them.
          */
