@@ -17,6 +17,7 @@
 package com.android.systemui.qs;
 
 import android.os.Bundle;
+import android.os.SystemProperties;
 
 import com.android.systemui.R;
 import com.android.systemui.battery.BatteryMeterViewController;
@@ -124,9 +125,18 @@ class QuickStatusBarHeaderController extends ViewController<QuickStatusBarHeader
         mQSCarrierGroupController
                 .setOnSingleCarrierChangedListener(mView::setIsSingleCarrier);
 
-        List<String> rssiIgnoredSlots = List.of(
-                getResources().getString(com.android.internal.R.string.status_bar_mobile)
-        );
+        List<String> rssiIgnoredSlots;
+
+        if (SystemProperties.getBoolean("persist.sys.flags.combined_signal_icons", true)) {
+            rssiIgnoredSlots = List.of(
+                    getResources().getString(com.android.internal.R.string.status_bar_no_calling),
+                    getResources().getString(com.android.internal.R.string.status_bar_call_strength)
+            );
+        } else {
+            rssiIgnoredSlots = List.of(
+                    getResources().getString(com.android.internal.R.string.status_bar_mobile)
+            );
+        }
 
         mView.onAttach(mIconManager, mQSExpansionPathInterpolator, rssiIgnoredSlots,
                 mInsetsProvider, mFeatureFlags.isEnabled(Flags.COMBINED_QS_HEADERS));
