@@ -138,6 +138,9 @@ class UdfpsControllerOverlay(
 
     private var touchExplorationEnabled = false
 
+    private var mStatusbarHeight = 0
+    private var mCutoutMasked = false
+
     /** Show the overlay or return false and do nothing if it is already showing. */
     @SuppressLint("ClickableViewAccessibility")
     fun show(controller: UdfpsController, params: UdfpsOverlayParams): Boolean {
@@ -160,6 +163,7 @@ class UdfpsControllerOverlay(
                         importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
                     }
 
+                    updateCutoutFlags();
                     windowManager.addView(this, coreLayoutParams.updateDimensions(animation))
                     touchExplorationEnabled = accessibilityManager.isTouchExplorationEnabled
                     overlayTouchListener = TouchExplorationStateChangeListener {
@@ -389,6 +393,8 @@ class UdfpsControllerOverlay(
             flags = flags or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
         }
 
+        val cutoutMaskedExtra = if (mCutoutMasked) mStatusbarHeight else 0;
+
         // Original sensorBounds assume portrait mode.
         val rotatedSensorBounds = Rect(overlayParams.sensorBounds)
 
@@ -413,7 +419,7 @@ class UdfpsControllerOverlay(
         }
 
         x = rotatedSensorBounds.left - paddingX
-        y = rotatedSensorBounds.top - paddingY
+        y = rotatedSensorBounds.top - paddingY - (cutoutMaskedExtra / 2)
         height = rotatedSensorBounds.height() + 2 * paddingX
         width = rotatedSensorBounds.width() + 2 * paddingY
 
@@ -438,6 +444,18 @@ class UdfpsControllerOverlay(
         addView(subView)
         subView.init()
         return subView
+    }
+
+    private fun updateCutoutFlags() {
+        mStatusbarHeight = context.resources.getDimensionPixelSize(
+            R.dimen.status_bar_height
+        )
+        val cutoutMasked = context.resources.getBoolean(
+            com.android.internal.R.bool.config_maskMainBuiltInDisplayCutout
+        )
+        if (mCutoutMasked != cutoutMasked) {
+            mCutoutMasked = cutoutMasked
+        }
     }
 }
 
