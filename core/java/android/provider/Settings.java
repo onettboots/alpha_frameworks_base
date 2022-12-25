@@ -6184,6 +6184,11 @@ public final class Settings {
          */
         public static final String SMART_CUTOFF_RESUME_TEMPERATURE = "smart_cutoff_resume_temperature";
 
+	/**
+         * @hide
+         */
+        public static final String VOLUME_MEDIA_OUTPUT_TOGGLE = "volume_media_output_toggle";
+
         /**
          * Whether to use the custom quick unlock screen control
          * @hide
