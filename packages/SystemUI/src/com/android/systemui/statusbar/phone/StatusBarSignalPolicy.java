@@ -168,14 +168,17 @@ public class StatusBarSignalPolicy implements SignalCallback,
         boolean hideVpn = hideList.contains(mSlotVpn);
         boolean hideIms = hideList.contains(mSlotIms);
 
+        if (hideVpn != mHideVpn) {
+            mHideVpn = hideVpn;
+            mHandler.post(this::updateVpn);
+        }
         if (hideAirplane != mHideAirplane || hideMobile != mHideMobile
                 || hideEthernet != mHideEthernet || hideWifi != mHideWifi
-                || hideVpn != mHideVpn || hideIms != mHideIms) {
+                || hideIms != mHideIms) {
             mHideAirplane = hideAirplane;
             mHideMobile = hideMobile;
             mHideEthernet = hideEthernet;
             mHideWifi = hideWifi;
-            mHideVpn = hideVpn;
             mHideIms = hideIms;
             // Re-register to get new callbacks.
             mNetworkController.removeCallback(this);
@@ -425,10 +428,7 @@ public class StatusBarSignalPolicy implements SignalCallback,
 
     @Override
     public void setImsIcon(ImsIconState icon) {
-        boolean showIms = icon.visible && !mHideIms;
-        String description = icon.contentDescription;
-
-        if (showIms) {
+        if (icon.visible && !mHideIms) {
             mIconController.setImsIcon(mSlotIms, icon);
             mIconController.setIconVisibility(mSlotIms, true);
         } else {

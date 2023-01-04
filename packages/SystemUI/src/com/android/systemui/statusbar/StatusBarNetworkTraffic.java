@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.statusbar.policy;
+package com.android.systemui.statusbar;
 
 import static com.android.systemui.statusbar.StatusBarIconView.STATE_DOT;
 import static com.android.systemui.statusbar.StatusBarIconView.STATE_HIDDEN;
@@ -23,11 +23,15 @@ import static com.android.systemui.statusbar.StatusBarIconView.STATE_ICON;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.View;
 
 import com.android.systemui.Dependency;
+import com.android.systemui.R;
 import com.android.systemui.plugins.DarkIconDispatcher;
 import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
 import com.android.systemui.statusbar.StatusIconDisplayable;
+import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy.NetworkTrafficState;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 
@@ -37,15 +41,13 @@ import java.util.ArrayList;
 public class StatusBarNetworkTraffic extends NetworkTraffic implements DarkReceiver,
         StatusIconDisplayable {
 
-
-    public static final String SLOT = "networktraffic";
-
     private int mVisibleState = -1;
-    private boolean mSystemIconVisible = true;
     private boolean mColorIsStatic;
 
     private final KeyguardUpdateMonitor mKeyguardUpdateMonitor;
     private boolean mKeyguardShowing;
+
+    private String mSlot;
 
     public StatusBarNetworkTraffic(Context context) {
         this(context, null);
@@ -57,10 +59,19 @@ public class StatusBarNetworkTraffic extends NetworkTraffic implements DarkRecei
 
     public StatusBarNetworkTraffic(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setVisibleState(STATE_ICON);
-
         mKeyguardUpdateMonitor = Dependency.get(KeyguardUpdateMonitor.class);
         mKeyguardUpdateMonitor.registerCallback(mUpdateCallback);
+    }
+
+    public static StatusBarNetworkTraffic fromContext(Context context, String slot) {
+        StatusBarNetworkTraffic v = new StatusBarNetworkTraffic(context);
+        v.setSlot(slot);
+        v.setVisibleState(STATE_ICON);
+        return v;
+    }
+
+    public void setSlot(String slot) {
+        mSlot = slot;
     }
 
     @Override
@@ -85,7 +96,7 @@ public class StatusBarNetworkTraffic extends NetworkTraffic implements DarkRecei
 
     @Override
     public String getSlot() {
-        return SLOT;
+        return mSlot;
     }
 
     @Override
@@ -100,21 +111,13 @@ public class StatusBarNetworkTraffic extends NetworkTraffic implements DarkRecei
 
     @Override
     public void setVisibleState(int state, boolean animate) {
-        if (state == mVisibleState || !mEnabled || !mAttached) {
-            return;
-        }
         mVisibleState = state;
+        updateVisibility();
+    }
 
-        switch (state) {
-            case STATE_ICON:
-                mSystemIconVisible = true;
-                break;
-            case STATE_DOT:
-            case STATE_HIDDEN:
-            default:
-                mSystemIconVisible = false;
-                break;
-        }
+    public void applyNetworkTrafficState(NetworkTrafficState state) {
+        // mEnabled and state.visible will have same values, no need to set again
+        updateVisibility();
     }
 
     private final KeyguardUpdateMonitorCallback mUpdateCallback =
@@ -133,12 +136,14 @@ public class StatusBarNetworkTraffic extends NetworkTraffic implements DarkRecei
 
     @Override
     protected void updateVisibility() {
-        boolean visible = mEnabled && mIsActive && !mKeyguardShowing && mSystemIconVisible
-            && getText() != "";
+        boolean visible = mEnabled && mIsActive && getText() != ""
+                    && !mKeyguardShowing 
+                    && mVisibleState == STATE_ICON;
         if (visible != mVisible) {
             mVisible = visible;
-            setVisibility(mVisible ? VISIBLE : GONE);
+            setVisibility(mVisible ? View.VISIBLE : View.GONE);
             checkUpdateTrafficDrawable();
+            requestLayout();
         }
     }
 
