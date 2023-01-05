@@ -109,7 +109,6 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable {
     private boolean mHideArrows;
 
     protected boolean mVisible = true;
-    private boolean mScreenOn = true;
 
     private ConnectivityManager mConnectivityManager;
     private final Handler mTrafficHandler;
@@ -251,7 +250,7 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable {
                 }
 
                 // Schedule periodic refresh
-                if (mEnabled && mScreenOn && mAttached) {
+                if (mEnabled && mAttached) {
                     mTrafficHandler.sendEmptyMessageDelayed(MESSAGE_TYPE_PERIODIC_REFRESH,
                             mRefreshInterval * 1000);
                 }
@@ -376,8 +375,6 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable {
 
             IntentFilter filter = new IntentFilter();
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-            filter.addAction(Intent.ACTION_SCREEN_OFF);
-            filter.addAction(Intent.ACTION_SCREEN_ON);
             mContext.registerReceiver(mIntentReceiver, filter, null, mTrafficHandler);
 
             updateViews();
@@ -423,11 +420,6 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable {
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 mConnectionAvailable = mConnectivityManager.getActiveNetworkInfo() != null;
                 updateViews();
-            } else if (action.equals(Intent.ACTION_SCREEN_ON)) {
-                mScreenOn = true;
-                updateViews();
-            } else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
-                mScreenOn = false;
             }
         }
     };
