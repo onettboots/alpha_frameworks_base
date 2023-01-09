@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2016-2022 crDroid Android Project
+     Copyright (C) 2016-2023 crDroid Android Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
     <string name="pocket_lock_message_long_press">按住电源按键来解锁</string>
     <string name="pocket_view_title">口袋模式已开启</string>
     <string name="pocket_view_title_cancel">使用您的手机：</string>
-    <string name="pocket_view_top_tag_cancel">检查手机的蓝色区域是否清除任何障碍物，并清洁任何污垢或灰尘。</string>
+    <string name="pocket_view_top_tag_cancel">请清洁手机蓝色区域所有污垢或灰尘。</string>
     <string name="pocket_view_top_tag_cancel2">长按电源按钮强制退出口袋模式</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>
@@ -42,7 +42,7 @@
     <string name="face_unlock_disabled_idle">面部解锁因不活跃被禁用</string>
     <!-- Parallel space badge -->
     <!-- Message for updating an existing app -->
-    <string name="old_version_number">已安装的版本: <xliff:g id="old_version">%1$s</xliff:g></string>
+    <string name="old_version_number">已安装: <xliff:g id="old_version">%1$s</xliff:g></string>
     <!-- Message for updating an existing system app -->
-    <string name="new_version_number">待安装版本：<xliff:g id="new_version">%1$s</xliff:g></string>
+    <string name="new_version_number">将安装：<xliff:g id="new_version">%1$s</xliff:g></string>
 </resources>
