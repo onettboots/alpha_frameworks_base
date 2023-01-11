@@ -28,11 +28,7 @@
     <integer name="config_currentInfoDivider" translatable="false">1000</integer>
 
     <!-- Udfps vendor code -->
-    <integer name="config_udfpsVendorCode">0</integer>
-
-    <!-- Whether to pulse onFingerDown actions instead
-        of waking the screen while the screen is off or in lpm. -->
-    <bool name="config_pulseOnFingerDown">false</bool>
+    <integer name="config_udfpsVendorCode">22</integer>
 
     <!-- On-The-Go -->
     <integer name="quick_settings_onthego_dialog_short_timeout">3000</integer>
