@@ -6049,6 +6049,11 @@ public final class Settings {
         public static final String UDFPS_ICON = "udfps_icon";
 
         /**
+         * @hide
+         */
+        public static final String UDFPS_PRESSED_COLOR = "udfps_pressed_color";
+
+        /**
          * Whether to enable the pixel navbar animation
          * @hide
          */
