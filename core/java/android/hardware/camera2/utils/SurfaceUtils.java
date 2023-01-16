@@ -39,11 +39,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import android.app.ActivityThread;
-import android.os.SystemProperties;
-import android.text.TextUtils;
-
-
 /**
  * Various Surface utilities.
  */
@@ -333,20 +328,4 @@ public class SurfaceUtils {
 
     private static native long nativeGetSurfaceId(Surface surface);
 
-    private static boolean isPrivilegedApp() {
-        String packageName = ActivityThread.currentOpPackageName();
-        String packageList = SystemProperties.get("persist.vendor.camera.privapp.list");
-
-        if (packageList.length() > 0) {
-            TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter(',');
-            splitter.setString(packageList);
-            for (String str : splitter) {
-                if (packageName.equals(str)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 }
