@@ -118,10 +118,6 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
                         mView.getTileLayout().updateSettings();
                         setTiles();
                     }
-                    if (mView.getTileLayout() != null) {
-                        mView.getTileLayout().updateSettings();
-                        setTiles();
-                    }
                     onConfigurationChanged();
                 }
             };

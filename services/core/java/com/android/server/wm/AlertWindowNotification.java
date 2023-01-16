@@ -24,6 +24,7 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.provider.Settings.ACTION_MANAGE_APP_OVERLAY_PERMISSION;
 
+import android.annotation.UserIdInt;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
@@ -54,10 +55,11 @@ class AlertWindowNotification {
     private String mNotificationTag;
     private final NotificationManager mNotificationManager;
     private final String mPackageName;
-    private final int mUserId;
+    private final @UserIdInt int mUserId;
     private boolean mPosted;
 
-    AlertWindowNotification(WindowManagerService service, String packageName, int userId) {
+    AlertWindowNotification(WindowManagerService service, String packageName,
+            @UserIdInt int userId) {
         mService = service;
         mPackageName = packageName;
         mUserId = userId;
@@ -173,7 +175,7 @@ class AlertWindowNotification {
 
 
     private ApplicationInfo getApplicationInfoAsUser(PackageManager pm, String packageName,
-            int userId) {
+            @UserIdInt int userId) {
         try {
             return pm.getApplicationInfoAsUser(packageName, 0, userId);
         } catch (PackageManager.NameNotFoundException e) {
