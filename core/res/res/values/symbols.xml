@@ -4907,4 +4907,7 @@
   <java-symbol type="id" name="language_picker_header" />
 
   <java-symbol type="dimen" name="status_bar_height_default" />
+
+  <!-- Display color inversion availability -->
+  <java-symbol type="bool" name="config_displayInversionAvailable" />
 </resources>
