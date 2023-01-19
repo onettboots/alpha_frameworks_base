@@ -5979,4 +5979,7 @@
          TODO(b/236022708) Move rear display state to device state config file
     -->
     <integer name="config_deviceStateRearDisplay">-1</integer>
+
+    <!-- Display color inversion availability -->
+    <bool name="config_displayInversionAvailable">true</bool>
 </resources>
