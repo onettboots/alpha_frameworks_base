@@ -1,6 +1,0 @@
-<resources>
-
-    <!-- DC dimming -->
-    <string name="config_dcDimmingSysNode"></string>
-
-</resources>
