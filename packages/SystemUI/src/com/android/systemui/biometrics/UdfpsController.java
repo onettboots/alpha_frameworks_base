@@ -323,11 +323,11 @@ public class UdfpsController implements DozeReceiver {
                 mFgExecutor.execute(() -> {
                     if (acquiredInfo == FINGERPRINT_ACQUIRED_VENDOR && vendorCode == mUdfpsVendorCode) {
                         if (mStatusBarStateController.isDozing() && mScreenOn) {
-                                onAodInterrupt(0, 0, 0, 0);
-                        } else if (!mScreenOn && isScreenOffUdfpsEnabled()) {
-                            mContext.sendBroadcastAsUser(new Intent(PULSE_ACTION),
-                                    new UserHandle(UserHandle.USER_SYSTEM));
                             onAodInterrupt(0, 0, 0, 0);
+                        } else if (!mScreenOn && isScreenOffUdfpsEnabled()) {
+                            onAodInterrupt(0, 0, 0, 0);
+                            mContext.sendBroadcastAsUser(new Intent(PULSE_ACTION),
+                                    new UserHandle(UserHandle.USER_CURRENT));
                         }
                     }
                 });
