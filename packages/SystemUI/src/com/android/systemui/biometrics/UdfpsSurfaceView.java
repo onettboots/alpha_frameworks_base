@@ -24,8 +24,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.RectF;
-import android.os.UserHandle;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
@@ -76,8 +74,7 @@ public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
         mSensorPaint = new Paint(0 /* flags */);
         mSensorPaint.setAntiAlias(true);
-
-        mSensorPaint.setColor(getUdfpsPressedColor(context));;
+        mSensorPaint.setColor(context.getColor(R.color.config_udfpsColor));
         mSensorPaint.setStyle(Paint.Style.FILL);
 
         mUdfpsIconPressed = context.getDrawable(R.drawable.udfps_icon_pressed);
@@ -158,12 +155,5 @@ public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callb
                 mHolder.unlockCanvasAndPost(canvas);
             }
         }
-    }
-
-    private int getUdfpsPressedColor(Context context) {
-        int defaultColor = context.getColor(R.color.config_udfpsColor);
-        return Settings.System.getIntForUser(
-                    context.getContentResolver(), Settings.System.UDFPS_PRESSED_COLOR,
-                    defaultColor, UserHandle.USER_CURRENT);
     }
 }
