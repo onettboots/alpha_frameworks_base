@@ -20,4 +20,7 @@
     <!-- Bootleg unneccesary gradient declaration | Just for our shishu bars -->
     <java-symbol type="color" name="bootleg_accent_gradient_end_color" />
 
+    <!-- Boost framework flag -->
+    <java-symbol type="bool" name="config_supportsBoostFramework" />
+
 </resources>
