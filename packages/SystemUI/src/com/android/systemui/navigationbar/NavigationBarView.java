@@ -950,23 +950,6 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
         mContextualButtonGroup.setButtonVisibility(R.id.accessibility_button, visible);
     }
 
-    public void offsetNavBar(Offset offset) {
-        if (isGesturalMode(mNavBarMode)) {
-            final NavigationHandle handle = (NavigationHandle) getHomeHandle().getCurrentView();
-            if (handle != null) {
-                handle.setTranslationY(offset.getY());
-                handle.invalidate();
-            }
-            return;
-        }
-        if (mNavigationBarContents == null) {
-            return;
-        }
-        mNavigationBarContents.setTranslationX(offset.getX());
-        mNavigationBarContents.setTranslationY(offset.getY());
-        invalidate();
-    }
-
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
