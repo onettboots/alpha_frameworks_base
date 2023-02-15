@@ -55,7 +55,6 @@ import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.CommandQueue.Callbacks;
 import com.android.systemui.statusbar.phone.userswitcher.StatusBarUserSwitcherContainer;
-import com.android.systemui.statusbar.policy.Offset;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.user.ui.binder.StatusBarUserChipViewBinder;
 import com.android.systemui.user.ui.viewmodel.StatusBarUserChipViewModel;
@@ -75,7 +74,6 @@ public class PhoneStatusBarView extends FrameLayout implements Callbacks, TunerS
     private static final String TOP_PADDING =
             "system:" + Settings.System.STATUSBAR_TOP_PADDING;
 
-    private int mBasePaddingBottom;
     private int mLeftPad;
     private int mRightPad;
     private int mTopPad;
@@ -156,15 +154,6 @@ public class PhoneStatusBarView extends FrameLayout implements Callbacks, TunerS
     void init(StatusBarUserChipViewModel viewModel) {
         StatusBarUserSwitcherContainer container = findViewById(R.id.user_switcher_container);
         StatusBarUserChipViewBinder.bind(container, viewModel);
-    }
-
-    public void offsetStatusBar(Offset offset) {
-        if (mStatusBarContents == null) {
-            return;
-        }
-        mStatusBarContents.setTranslationX(offset.getX());
-        mStatusBarContents.setTranslationY(offset.getY());
-        invalidate();
     }
 
     @Override
