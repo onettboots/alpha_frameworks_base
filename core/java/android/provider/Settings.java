@@ -5674,11 +5674,6 @@ public final class Settings {
         public static final String QS_SHOW_BATTERY_ESTIMATE = "qs_show_battery_estimate";
 
         /**
-         * @hide
-         */
-        public static final String LOCKSCREEN_WEATHER_ENABLED = "lockscreen_weather_enabled";
-
-        /**
          * Double tap on lockscreen to sleep
          * @hide
          */
@@ -6246,11 +6241,6 @@ public final class Settings {
          * @hide
          */
         public static final String ADAPTIVE_PLAYBACK_TIMEOUT = "adaptive_playback_timeout";
-
-        /**
-         * @hide
-         */
-        public static final String LOCKSCREEN_WEATHER_LOCATION = "lockscreen_weather_location";
 
         /**
          * Statusbar logo

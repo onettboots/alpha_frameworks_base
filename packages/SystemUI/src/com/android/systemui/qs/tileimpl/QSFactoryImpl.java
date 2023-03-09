@@ -78,7 +78,6 @@ import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.VolumeTile;
 import com.android.systemui.qs.tiles.VpnTile;
-import com.android.systemui.qs.tiles.WeatherTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
 import com.android.systemui.util.leak.GarbageMonitor;
@@ -141,7 +140,6 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
     private final Provider<VolumeTile> mVolumeTileProvider;
     private final Provider<SmartPixelsTile> mSmartPixelsTileProvider;
-    private final Provider<WeatherTile> mWeatherTileProvider;
     private final Provider<RefreshRateTile> mRefreshRateTileProvider;
     private final Provider<ScreenshotTile> mScreenshotTileProvider;
     private final Provider<SoundSearchTile> mSoundSearchTileProvider;
@@ -203,7 +201,6 @@ public class QSFactoryImpl implements QSFactory {
             Provider<DataSwitchTile> dataSwitchTileProvider,
             Provider<VolumeTile> volumeTileProvider,
             Provider<SmartPixelsTile> smartPixelsTileProvider,
-            Provider<WeatherTile> weatherTileProvider,
             Provider<RefreshRateTile> refreshRateTileProvider,
             Provider<ScreenshotTile> screenshotTileProvider,
             Provider<SoundSearchTile> soundSearchTileProvider,
@@ -260,7 +257,6 @@ public class QSFactoryImpl implements QSFactory {
         mDataSwitchTileProvider = dataSwitchTileProvider;
         mVolumeTileProvider = volumeTileProvider;
         mSmartPixelsTileProvider = smartPixelsTileProvider;
-        mWeatherTileProvider = weatherTileProvider;
         mRefreshRateTileProvider = refreshRateTileProvider;
         mScreenshotTileProvider = screenshotTileProvider;
         mSoundSearchTileProvider = soundSearchTileProvider;
@@ -378,8 +374,6 @@ public class QSFactoryImpl implements QSFactory {
                 return mVolumeTileProvider.get();
             case "smartpixels":
                 return mSmartPixelsTileProvider.get();
-            case "weather":
-                return mWeatherTileProvider.get();
             case "refresh_rate":
                 return mRefreshRateTileProvider.get();
             case "screenshot":
