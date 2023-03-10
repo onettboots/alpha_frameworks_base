@@ -128,17 +128,6 @@ public class KGWeatherText extends TextView implements
         } else {
             setVisibility(View.GONE);
         }
-
-        if (onChange && mQsWeatherEnabled == 0) {
-            // Disable OmniJaws if tile isn't used either
-            String[] tiles = Settings.Secure.getStringForUser(resolver,
-                    Settings.Secure.QS_TILES, UserHandle.USER_CURRENT).split(",");
-            boolean weatherTileEnabled = Arrays.asList(tiles).contains("weather");
-            Log.d(TAG, "Weather tile enabled " + weatherTileEnabled);
-            if (!weatherTileEnabled) {
-                mWeatherClient.setOmniJawsEnabled(false);
-            }
-        }
     }
 
     private void queryAndUpdateWeather() {
