@@ -63,12 +63,12 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_marginStart="2dp"
+            android:layout_marginStart="4dp"
             android:gravity="start|center_vertical">
 
             <com.android.systemui.crdroid.weather.QsWeatherImage
                 android:id="@+id/weather_image"
-                android:layout_width="24dp"
+                android:layout_width="22dp"
                 android:layout_height="wrap_content"
                 android:paddingStart="2dp"
                 android:gravity="center_vertical|start" />
