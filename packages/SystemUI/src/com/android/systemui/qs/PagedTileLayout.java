@@ -251,6 +251,58 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
     	setPageTransformer(true, transition);
     }
 
+    private void setCustomTransitions(int transformer) {
+    	ABaseTransformer transition = null;
+    	switch(transformer) {
+        	case 0:
+        	    transition = new DefaultTransformer();
+        	    break;
+        	case 1:
+        	    transition = new CubeInTransformer();
+        	    break;
+        	case 2:
+        	    transition = new CubeOutTransformer();
+        	    break;
+        	case 3:
+        	    transition = new AccordionTransformer();
+        	    break;
+        	case 4:
+        	    transition = new BackgroundToForegroundTransformer();
+        	    break;
+        	case 5:
+        	    transition = new DepthPageTransformer();
+        	    break;
+        	case 6:
+        	    transition = new FadeTransformer();
+        	    break;
+        	case 7:
+        	    transition = new ForegroundToBackgroundTransformer();
+        	    break;
+        	case 8:
+        	    transition = new RotateDownTransformer();
+        	    break;
+        	case 9:
+        	    transition = new RotateUpTransformer();
+        	    break;
+        	case 10:
+        	    transition = new StackTransformer();
+        	    break;
+        	case 11:
+        	    transition = new TabletTransformer();
+        	    break;
+        	case 12:
+        	    transition = new ZoomInTransformer();
+        	    break;
+        	case 13:
+        	    transition = new ZoomOutTransformer();
+        	    break;
+        	case 14:
+        	    transition = new ZoomOutSlideTransformer();
+        	    break;
+        }
+    	setPageTransformer(true, transition);
+    }
+
     /**
      * Obtains the current page number respecting RTL
      */
