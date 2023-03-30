@@ -29,10 +29,10 @@ import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.CallIndicatorI
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.MobileIconState;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.WifiIconState;
 import com.android.systemui.statusbar.pipeline.mobile.ui.viewmodel.MobileIconViewModel;
+import com.android.systemui.statusbar.policy.NetworkTrafficState;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import com.android.systemui.statusbar.policy.NetworkTrafficState;
 
 /**
  * Wraps {@link com.android.internal.statusbar.StatusBarIcon} so we can still have a uniform list
@@ -192,14 +192,7 @@ public class StatusBarIconHolder {
         return holder;
     }
 
-    public static StatusBarIconHolder fromNetworkTrafficState(NetworkTrafficState state) {
-        StatusBarIconHolder holder = new StatusBarIconHolder();
-        holder.mNetworkTrafficState = state;
-        holder.mType = TYPE_NETWORK_TRAFFIC;
-        return holder;
-    }
-
-    public int getType() {
+    public @IconType int getType() {
         return mType;
     }
 
@@ -274,7 +267,8 @@ public class StatusBarIconHolder {
                 return mImsState.visible;
             case TYPE_NETWORK_TRAFFIC:
                 return mNetworkTrafficState.visible;
-            default: return true;
+            default:
+                return true;
         }
     }
 
