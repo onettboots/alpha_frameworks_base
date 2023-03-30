@@ -799,13 +799,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         mLatencyTracker = latencyTracker;
         mActivityLaunchAnimator = activityLaunchAnimator;
         mAlternateTouchProvider = alternateTouchProvider.map(Provider::get).orElse(null);
-        mSensorProps = new FingerprintSensorPropertiesInternal(
-                -1 /* sensorId */,
-                SensorProperties.STRENGTH_CONVENIENCE,
-                0 /* maxEnrollmentsPerUser */,
-                new ArrayList<>() /* componentInfo */,
-                FingerprintSensorProperties.TYPE_UNKNOWN,
-                false /* resetLockoutRequiresHardwareAuthToken */);
+        mSensorProps = findFirstUdfps();
         mBatteryController = batteryController;
 
         mBiometricExecutor = biometricsExecutor;
@@ -1186,7 +1180,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
                 false /* isAod */);
     }
 
-    private void onFingerDown(
+    private synchronized void onFingerDown(
             long requestId,
             int pointerId,
             float x,
@@ -1290,7 +1284,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
                 false /* isAod */);
     }
 
-    private void onFingerUp(
+    private synchronized void onFingerUp(
             long requestId,
             @NonNull UdfpsView view,
             int pointerId,
