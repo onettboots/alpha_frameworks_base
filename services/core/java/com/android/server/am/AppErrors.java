@@ -1090,6 +1090,13 @@ class AppErrors {
             if (!proc.isPersistent()) {
                 packageList = proc.getPackageListWithVersionCode();
             }
+            if (errState.isInputResumed()) {
+                Slog.i(TAG, "App input dispatching already resumed: " + proc);
+                errState.setNotResponding(false);
+                errState.setNotRespondingReport(null);
+                errState.setInputResumed(false);
+                return;
+            }
             if (errState.getDialogController().hasAnrDialogs()) {
                 Slog.e(TAG, "App already has anr dialog: " + proc);
                 MetricsLogger.action(mContext, MetricsProto.MetricsEvent.ACTION_APP_ANR,
@@ -1100,7 +1107,10 @@ class AppErrors {
             boolean showBackground = Settings.Secure.getIntForUser(mContext.getContentResolver(),
                     Settings.Secure.ANR_SHOW_BACKGROUND, 0,
                     mService.mUserController.getCurrentUserId()) != 0;
-            if (mService.mAtmInternal.canShowErrorDialogs() || showBackground) {
+            final boolean anrSilenced = mAppsNotReportingCrashes != null
+                    && mAppsNotReportingCrashes.contains(proc.info.packageName);
+            if (!anrSilenced &&
+                    (mService.mAtmInternal.canShowErrorDialogs() || showBackground)) {
                 AnrController anrController = errState.getDialogController().getAnrController();
                 if (anrController == null) {
                     errState.getDialogController().showAnrDialogs(data);
@@ -1125,7 +1135,7 @@ class AppErrors {
                 MetricsLogger.action(mContext, MetricsProto.MetricsEvent.ACTION_APP_ANR,
                         AppNotRespondingDialog.CANT_SHOW);
                 // Just kill the app if there is no dialog to be shown.
-                doKill = true;
+                doKill = !anrSilenced;
             }
         }
         if (doKill) {
@@ -1153,6 +1163,7 @@ class AppErrors {
                 errState.getDialogController().clearAnrDialogs();
             }
             proc.mErrorState.setAnrData(null);
+            proc.mErrorState.setInputResumed(true);
         }
     }
 

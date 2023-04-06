@@ -913,7 +913,7 @@
     <!-- Right padding for the "app name" section of the harmful app dialog -->
     <dimen name="harmful_app_name_padding_right">24dp</dimen>
     <!-- Top padding for the "app name" section of the harmful app dialog -->
-    <dimen name="harmful_app_name_padding_top">8dp</dimen>
+    <dimen name="harmful_app_name_padding_top">24dp</dimen>
     <!-- Padding between the icon and app name in the harmful app dialog -->
     <dimen name="harmful_app_icon_name_padding">20dp</dimen>
     <!-- The size of the icon on the harmful app dialog -->
@@ -931,7 +931,7 @@
 
     <!-- chooser/resolver (sharesheet) spacing -->
     <dimen name="chooser_width">412dp</dimen>
-    <dimen name="chooser_corner_radius">28dp</dimen>
+    <dimen name="chooser_corner_radius">@dimen/config_dialogCornerRadius</dimen>
     <dimen name="chooser_row_text_option_translate">25dp</dimen>
     <dimen name="chooser_view_spacing">18dp</dimen>
     <dimen name="chooser_edge_margin_thin">16dp</dimen>
@@ -979,7 +979,7 @@
     <dimen name="controls_thumbnail_image_max_width">280dp</dimen>
 
     <!-- System-provided radius for the background view of app widgets. The resolved value of this resource may change at runtime. -->
-    <dimen name="system_app_widget_background_radius">28dp</dimen>
+    <dimen name="system_app_widget_background_radius">@dimen/config_dialogCornerRadius</dimen>
     <!-- System-provided radius for inner views on app widgets. The resolved value of this resource may change at runtime. -->
     <dimen name="system_app_widget_inner_radius">20dp</dimen>
     <!-- System-provided padding for inner views on app widgets. The resolved value of this resource may change at runtime. @removed -->

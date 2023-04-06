@@ -19,6 +19,7 @@ cc_library_shared {
     name: "libandroid_runtime",
     host_supported: true,
     cflags: [
+        "-O3",
         "-Wno-unused-parameter",
         "-Wno-non-virtual-dtor",
         "-Wno-maybe-uninitialized",
@@ -36,7 +37,7 @@ cc_library_shared {
         "-Wunreachable-code",
     ],
 
-    cppflags: ["-Wno-conversion-null"],
+    cppflags: ["-Wno-conversion-null", "-O3"],
 
     srcs: [
         "android_animation_PropertyValuesHolder.cpp",
@@ -50,6 +51,7 @@ cc_library_shared {
         "android_util_XmlBlock.cpp",
         "android_util_jar_StrictJarFile.cpp",
         "com_android_internal_util_VirtualRefBasePtr.cpp",
+        "com_android_internal_app_ActivityTrigger.cpp",
         ":deviceproductinfoconstants_aidl",
     ],
 
@@ -411,6 +413,7 @@ cc_library_shared {
     lto: {
         full: true,
     },
+    whole_program_vtables: true, // Requires LTO
 }
 
 cc_library_headers {

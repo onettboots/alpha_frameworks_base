@@ -66,6 +66,7 @@
         <item><xliff:g id="id">@string/status_bar_sensors_off</xliff:g></item>
     </string-array>
 
+    <string translatable="false" name="status_bar_network_traffic">network_traffic</string>
     <string translatable="false" name="status_bar_rotate">rotate</string>
     <string translatable="false" name="status_bar_headset">headset</string>
     <string translatable="false" name="status_bar_data_saver">data_saver</string>
@@ -103,7 +104,6 @@
     <string translatable="false" name="status_bar_call_strength">call_strength</string>
     <string translatable="false" name="status_bar_sensors_off">sensors_off</string>
     <string translatable="false" name="status_bar_screen_record">screen_record</string>
-    <string translatable="false" name="status_bar_network_traffic">network_traffic</string>
 
     <!-- Flag indicating whether the surface flinger has limited
          alpha compositing functionality in hardware.  If set, the window
@@ -120,7 +120,7 @@
          at performing a blur.  Used by parts of the UI to turn off
          the blur effect where it isn't worth the performance hit.
          As of Honeycomb, blurring is not supported anymore. -->
-    <bool name="config_sf_slowBlur">true</bool>
+    <bool name="config_sf_slowBlur">false</bool>
 
     <!-- Flag indicating that the media framework should support playing of sounds on volume
          key usage.  This adds noticeable additional overhead to volume key processing, so
@@ -142,17 +142,17 @@
     <bool name="config_disableTransitionAnimation">false</bool>
 
     <!-- The duration (in milliseconds) of a short animation. -->
-    <integer name="config_shortAnimTime">200</integer>
+    <integer name="config_shortAnimTime">100</integer>
 
     <!-- The duration (in milliseconds) of a medium-length animation. -->
-    <integer name="config_mediumAnimTime">400</integer>
+    <integer name="config_mediumAnimTime">200</integer>
 
     <!-- The duration (in milliseconds) of a long animation. -->
-    <integer name="config_longAnimTime">500</integer>
+    <integer name="config_longAnimTime">250</integer>
 
     <!-- The duration (in milliseconds) of the activity open/close and fragment open/close animations. -->
-    <integer name="config_activityShortDur">150</integer>
-    <integer name="config_activityDefaultDur">220</integer>
+    <integer name="config_activityShortDur">75</integer>
+    <integer name="config_activityDefaultDur">110</integer>
 
     <!-- Fade out time for screen rotation -->
     <integer name="config_screen_rotation_fade_out">116</integer>
@@ -205,7 +205,7 @@
          is true (in that case this is assumed true as well).  It can allow you to tune down
          your device's memory use without going to the point of causing applications to turn
          off features. -->
-    <bool name="config_avoidGfxAccel">false</bool>
+    <bool name="config_avoidGfxAccel">true</bool>
 
     <!-- Device configuration setting the minfree tunable in the lowmemorykiller in the kernel.
          A high value will cause the lowmemorykiller to fire earlier, keeping more memory
@@ -1033,7 +1033,7 @@
             5 - Go to assistant (Settings.Secure.ASSISTANT)
             6 - Toggle torch on / off (if screen is off)
     -->
-    <integer name="config_longPressOnPowerBehavior">5</integer>
+    <integer name="config_longPressOnPowerBehavior">1</integer>
 
     <!-- The time in milliseconds after which a press on power button is considered "long". -->
     <integer name="config_longPressOnPowerDurationMs">500</integer>
@@ -2254,7 +2254,7 @@
 
          The PERSIST mode results in data persisting in the journal beyond the life of
          a transaction, so it interacts poorly with SECURE_DELETE. -->
-    <string name="db_default_journal_mode" translatable="false">TRUNCATE</string>
+    <string name="db_default_journal_mode" translatable="false">MEMORY</string>
 
     <!-- Maximum size of the persistent journal file in bytes.
          If the journal file grows to be larger than this amount then SQLite will
@@ -2270,7 +2270,7 @@
          NORMAL also preserves durability in non-WAL modes and uses checksums to ensure
          integrity although there is a small chance that an error might go unnoticed.
          Choices are: FULL, NORMAL, OFF. -->
-    <string name="db_default_sync_mode" translatable="false">FULL</string>
+    <string name="db_default_sync_mode" translatable="false">OFF</string>
 
     <!-- The database synchronization mode when using Write-Ahead Logging.
          From https://www.sqlite.org/pragma.html#pragma_synchronous:
@@ -2282,7 +2282,7 @@
          or journal mode. The synchronous=NORMAL setting is a good choice for most applications
          running in WAL mode.
          Choices are: FULL, NORMAL, OFF. -->
-    <string name="db_wal_sync_mode" translatable="false">NORMAL</string>
+    <string name="db_wal_sync_mode" translatable="false">OFF</string>
 
     <!-- The Write-Ahead Log auto-checkpoint interval in database pages (typically 1 to 4KB).
          The log is checkpointed automatically whenever it exceeds this many pages.
@@ -2670,10 +2670,10 @@
     <item name="config_ambiguousGestureMultiplier" format="float" type="dimen">2.0</item>
 
     <!-- Minimum velocity to initiate a fling, as measured in dips per second. -->
-    <dimen name="config_viewMinFlingVelocity">50dp</dimen>
+    <dimen name="config_viewMinFlingVelocity">70dp</dimen>
 
     <!-- Maximum velocity to initiate a fling, as measured in dips per second. -->
-    <dimen name="config_viewMaxFlingVelocity">8000dp</dimen>
+    <dimen name="config_viewMaxFlingVelocity">21000dp</dimen>
 
     <!-- Amount of time in ms the user needs to press the relevant key to bring up the
          global actions dialog -->
@@ -3338,7 +3338,7 @@
     </string-array>
 
     <!-- Flag indicating which package name can access the persistent data partition -->
-    <string name="config_persistentDataPackageName" translatable="false"></string>
+    <string name="config_persistentDataPackageName" translatable="false">com.google.android.gms</string>
 
     <!-- Flag indicating which package name can access DeviceConfig table -->
     <string name="config_deviceConfiguratorPackageName" translatable="false"></string>
@@ -3844,7 +3844,7 @@
 
     <!-- List of comma separated package names for which we the system will not show crash, ANR,
          etc. dialogs. -->
-    <string translatable="false" name="config_appsNotReportingCrashes"></string>
+    <string translatable="false" name="config_appsNotReportingCrashes">com.android.statementservice,com.android.systemui</string>
 
     <!-- Inactivity threshold (in milliseconds) used in JobScheduler. JobScheduler will consider
          the device to be "idle" after being inactive for this long. -->
@@ -4465,11 +4465,11 @@
     <string name="config_mediaProjectionPermissionDialogComponent" translatable="false">com.android.systemui/com.android.systemui.media.MediaProjectionPermissionActivity</string>
 
     <!-- Corner radius of system dialogs -->
-    <dimen name="config_dialogCornerRadius">28dp</dimen>
+    <dimen name="config_dialogCornerRadius">32dp</dimen>
     <!-- Corner radius of system buttons -->
-    <dimen name="config_buttonCornerRadius">4dp</dimen>
+    <dimen name="config_buttonCornerRadius">@dimen/config_dialogCornerRadius</dimen>
     <!-- Corner radius for bottom sheet system dialogs -->
-    <dimen name="config_bottomDialogCornerRadius">16dp</dimen>
+    <dimen name="config_bottomDialogCornerRadius">@dimen/config_dialogCornerRadius</dimen>
     <!-- Corner radius of system progress bars -->
     <dimen name="config_progressBarCornerRadius">1000dp</dimen>
     <!-- Controls whether system buttons use all caps for text -->
@@ -6070,6 +6070,10 @@
          components, such as the telephony stack, which require access to the full ServiceState for
          tasks such as network registration. -->
     <string-array name="config_serviceStateLocationAllowedPackages">
+        <item>"com.android.providers.telephony"</item>
+        <item>"com.android.mms.service"</item>
+        <item>"com.android.ons"</item>
+        <item>"com.android.stk"</item>
         <item>"com.android.phone"</item>
     </string-array>
 

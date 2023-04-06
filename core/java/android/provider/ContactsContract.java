@@ -133,6 +133,7 @@ import java.util.Set;
  */
 @SuppressWarnings("unused")
 public final class ContactsContract {
+    private static final String TAG = ContactsContract.class.getSimpleName();
     /** The authority for the contacts provider */
     public static final String AUTHORITY = "com.android.contacts";
     /** A content:// style uri to the authority for the contacts provider */
@@ -10280,10 +10281,16 @@ public final class ContactsContract {
 
     private static Bundle nullSafeCall(@NonNull ContentResolver resolver, @NonNull Uri uri,
             @NonNull String method, @Nullable String arg, @Nullable Bundle extras) {
-        try (ContentProviderClient client = resolver.acquireContentProviderClient(uri)) {
+        Bundle out = new Bundle();
+        ContentProviderClient client = resolver.acquireContentProviderClient(uri);
+        if (client == null) {
+            return out;
+        }
+        try (client) {
             return client.call(method, arg, extras);
         } catch (RemoteException e) {
-            throw e.rethrowAsRuntimeException();
+            Log.e(TAG, "Failed to call ContactsProvider with exception " + e);
+            return out;
         }
     }
 }

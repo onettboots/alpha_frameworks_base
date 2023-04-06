@@ -65,6 +65,8 @@ public class ThemeOverlayApplier implements Dumpable {
     @VisibleForTesting
     static final String SYSUI_PACKAGE = "com.android.systemui";
 
+    static final String OVERLAY_CATEGORY_BG_COLOR =
+            "android.theme.customization.bg_color";
     static final String OVERLAY_CATEGORY_ACCENT_COLOR =
             "android.theme.customization.accent_color";
     static final String OVERLAY_CATEGORY_SYSTEM_PALETTE =
@@ -77,6 +79,12 @@ public class ThemeOverlayApplier implements Dumpable {
     static final String OVERLAY_COLOR_INDEX = "android.theme.customization.color_index";
 
     static final String OVERLAY_COLOR_BOTH = "android.theme.customization.color_both";
+
+    static final String OVERLAY_LUMINANCE_FACTOR = "android.theme.customization.luminance_factor";
+
+    static final String OVERLAY_CHROMA_FACTOR = "android.theme.customization.chroma_factor";
+
+    static final String OVERLAY_TINT_BACKGROUND = "android.theme.customization.tint_background";
 
     static final String COLOR_SOURCE_PRESET = "preset";
 
@@ -118,6 +126,15 @@ public class ThemeOverlayApplier implements Dumpable {
     @VisibleForTesting
     static final String OVERLAY_CATEGORY_LOCK_CLOCK_FONT =
             "android.theme.customization.lockscreen_clock_font";
+    @VisibleForTesting
+    static final String OVERLAY_CATEGORY_UI_STYLE_ANDROID =
+            "android.theme.customization.style.android";
+    @VisibleForTesting
+    static final String OVERLAY_CATEGORY_UI_STYLE_SETTINGS =
+            "android.theme.customization.style.settings";
+    @VisibleForTesting
+    static final String OVERLAY_CATEGORY_UI_STYLE_SYSUI =
+            "android.theme.customization.style.systemui";
 
     /*
      * All theme customization categories used by the system, in order that they should be applied,
@@ -129,6 +146,9 @@ public class ThemeOverlayApplier implements Dumpable {
             OVERLAY_CATEGORY_SHAPE,
             OVERLAY_CATEGORY_FONT,
             OVERLAY_CATEGORY_ACCENT_COLOR,
+            OVERLAY_CATEGORY_UI_STYLE_ANDROID,
+            OVERLAY_CATEGORY_UI_STYLE_SETTINGS,
+            OVERLAY_CATEGORY_UI_STYLE_SYSUI,
             OVERLAY_CATEGORY_ICON_ANDROID,
             OVERLAY_CATEGORY_ICON_SYSUI,
             OVERLAY_CATEGORY_ICON_SETTINGS,
@@ -145,6 +165,7 @@ public class ThemeOverlayApplier implements Dumpable {
             OVERLAY_CATEGORY_ACCENT_COLOR,
             OVERLAY_CATEGORY_FONT,
             OVERLAY_CATEGORY_SHAPE,
+            OVERLAY_CATEGORY_UI_STYLE_ANDROID,
             OVERLAY_CATEGORY_ICON_ANDROID,
             OVERLAY_CATEGORY_ICON_SYSUI,
             OVERLAY_CATEGORY_NAVBAR,
@@ -184,6 +205,9 @@ public class ThemeOverlayApplier implements Dumpable {
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_ACCENT_COLOR, ANDROID_PACKAGE);
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_FONT, ANDROID_PACKAGE);
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_SHAPE, ANDROID_PACKAGE);
+        mCategoryToTargetPackage.put(OVERLAY_CATEGORY_UI_STYLE_ANDROID, ANDROID_PACKAGE);
+        mCategoryToTargetPackage.put(OVERLAY_CATEGORY_UI_STYLE_SETTINGS, SETTINGS_PACKAGE);
+        mCategoryToTargetPackage.put(OVERLAY_CATEGORY_UI_STYLE_SYSUI, SYSUI_PACKAGE);
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_ICON_ANDROID, ANDROID_PACKAGE);
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_ICON_SYSUI, SYSUI_PACKAGE);
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_ICON_SETTINGS, SETTINGS_PACKAGE);

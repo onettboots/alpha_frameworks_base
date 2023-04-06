@@ -5590,6 +5590,11 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION = "status_bar_clock_auto_hide_sduration";
 
         /**
+         * Clock font size
+         * @hide
+         */
+        public static final String STATUS_BAR_CLOCK_SIZE = "status_bar_clock_size";
+        /**
          * Statusbar clock background
          * 0 - hide accented chip  (default)
          * 1 - show accented chip
@@ -5617,11 +5622,6 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_BATTERY_TEXT_CHARGING = "status_bar_battery_text_charging";
-
-        /**
-         * @hide
-         */
-        public static final String LOCKSCREEN_WEATHER_ENABLED = "lockscreen_weather_enabled";
 
         /**
          * Double tap on lockscreen to sleep
@@ -6148,6 +6148,12 @@ public final class Settings {
          */
         public static final String SMART_CHARGING = "smart_charging";
 
+			/**
+         * FOD pressed color
+         * @hide
+         */
+        public static final String UDFPS_COLOR = "udfps_color";
+
         /**
          * @hide
          */
@@ -6162,6 +6168,21 @@ public final class Settings {
          * @hide
          */
         public static final String SMART_CHARGING_RESUME_LEVEL = "smart_charging_resume_level";
+
+        /**
+         * @hide
+         */
+        public static final String SMART_CUTOFF = "smart_cutoff";
+
+        /**
+         * @hide
+         */
+        public static final String SMART_CUTOFF_TEMPERATURE = "smart_cutoff_temperature";
+
+        /**
+         * @hide
+         */
+        public static final String SMART_CUTOFF_RESUME_TEMPERATURE = "smart_cutoff_resume_temperature";
 
         /**
          * Whether to use the custom quick unlock screen control
@@ -6185,11 +6206,6 @@ public final class Settings {
          * @hide
          */
         public static final String ADAPTIVE_PLAYBACK_TIMEOUT = "adaptive_playback_timeout";
-
-        /**
-         * @hide
-         */
-        public static final String LOCKSCREEN_WEATHER_LOCATION = "lockscreen_weather_location";
 
         /**
          * Statusbar logo
@@ -6249,6 +6265,109 @@ public final class Settings {
         public static final String GESTURE_NAVBAR_RADIUS = "gesture_navbar_radius";
 
         /**
+         * Whether to enable StatusBar network traffic indicator.
+         * 0 means disabled, 1 means enabled.
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_ENABLED = "network_traffic_enabled";
+
+        /**
+         * Threshold value in KiB/s below which upload speed will be hidden.
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_AUTO_HIDE_THRESHOLD_TX = "network_traffic_auto_hide_threshold_tx";
+
+        /**
+         * Threshold value in KiB/s below which download speed will be hidden.
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_AUTO_HIDE_THRESHOLD_RX = "network_traffic_auto_hide_threshold_rx";
+
+        /**
+         * Text size for the unit text (like KiB/s).
+         * Values should be in Typedvalue.COMPLEX_UNIT_SP
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_UNIT_TEXT_SIZE = "network_traffic_unit_text_size";
+
+        /**
+         * Text scale factor for the rate used to scale the
+         * rate text size based on the unit text size.
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_RATE_TEXT_SCALE_FACTOR = "network_traffic_rate_text_scale_factor";
+
+        /**
+        * Ambient Customization
+        * @hide
+        */
+        public static final String AMBIENT_TEXT = "ambient_text";
+
+        /**
+         * Ambient text string
+         * @hide
+         */
+        public static final String AMBIENT_TEXT_STRING = "ambient_text_string";
+
+        /**
+         * Ambient text animation
+         * @hide
+         */
+        public static final String AMBIENT_TEXT_ANIMATION = "ambient_text_animation";
+
+        /**
+         * Ambient text size
+         * @hide
+         */
+        public static final String AMBIENT_TEXT_SIZE = "ambient_text_size";
+
+        /**
+         * Ambient text alignment
+         * @hide
+         */
+        public static final String AMBIENT_TEXT_ALIGNMENT = "ambient_text_alignment";
+
+        /**
+         * Ambient text color
+         * @hide
+         */
+        public static final String AMBIENT_TEXT_COLOR = "ambient_text_color";
+
+        /**
+         * Ambient text type color
+         * @hide
+         */
+        public static final String AMBIENT_TEXT_TYPE_COLOR = "ambient_text_type_color";
+
+        /**
+        * Ambient Customization
+        * @hide
+        */
+        public static final String AMBIENT_IMAGE = "ambient_image";
+
+        /**
+         * Ambient Custom Image
+         * @hide
+         */
+        public static final String AMBIENT_CUSTOM_IMAGE = "ambient_custom_image";
+
+        /**
+         * @hide
+         */
+        public static final String QS_PANEL_STYLE = "qs_panel_style";
+
+        /**
+         * @hide
+         */
+        public static final String RECENTS_LOCKED_TASKS = "recents_locked_tasks";
+
+        /**
+         * Settings Dashboard Style
+         * @hide
+         */
+        public static final String SETTINGS_DASHBOARD_STYLE = "settings_dashboard_style";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -6261,8 +6380,55 @@ public final class Settings {
         };
 
         /**
+         * Whether to settings custom transitions PageTileLayout
+         * @hide
+         */
+        public static final String CUSTOM_TRANSITIONS_KEY = "custom_transitions_page_tile";
+
+        /**
          * These are all public system settings
          *
+         * @hide
+         */
+        public static final String MAX_VISIBLE_NOTIFICATION_ICONS = "max_visible_notification_icons";
+
+        /**
+         * Whether to add left padding on statusbar
+         * @hide
+         */
+        public static final String STATUSBAR_LEFT_PADDING = "statusbar_left_padding";
+
+        /**
+         * Whether to add right padding on statusbar
+         * @hide
+         */
+        public static final String STATUSBAR_RIGHT_PADDING = "statusbar_right_padding";
+
+        /**
+         * Whether to add top padding on statusbar
+         * @hide
+         */
+        public static final String STATUSBAR_TOP_PADDING = "statusbar_top_padding";
+
+        /**
+         * Keyguard weather temperature
+         * 0: Hide the temperature
+         * 1: Display the temperature with scale and image
+         * 2: Display the temperature without scale and with image
+         * 3: Display the temparature with scale and without image
+         * 4: Display the temperature without scale and without image
+         * 5: Display the temperature image
+         * @hide
+         */
+        public static final String KG_SHOW_WEATHER_TEMP = "kg_show_weather_temp";
+
+        /**
+         * Weather icon pack
+         * @hide
+         */
+        public static final String OMNIJAWS_WEATHER_ICON_PACK = "omnijaws_weather_icon_pack";
+
+        /**
          * @hide
          */
         @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
@@ -6370,6 +6536,13 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE_VENDOR_HINT);
             PRIVATE_SETTINGS.add(DESKTOP_MODE);
+            PRIVATE_SETTINGS.add(MAX_VISIBLE_NOTIFICATION_ICONS);
+            PRIVATE_SETTINGS.add(STATUSBAR_LEFT_PADDING);
+            PRIVATE_SETTINGS.add(STATUSBAR_RIGHT_PADDING);
+            PRIVATE_SETTINGS.add(STATUSBAR_TOP_PADDING);
+            PRIVATE_SETTINGS.add(AMBIENT_TEXT_COLOR);
+            PRIVATE_SETTINGS.add(AMBIENT_TEXT_TYPE_COLOR);
+            PRIVATE_SETTINGS.add(OMNIJAWS_WEATHER_ICON_PACK);
         }
 
         /**
@@ -11987,6 +12160,13 @@ public final class Settings {
          * @hide
          */
         public static final String GMS_ENABLED = "gms_enabled";
+
+        /**
+         * Control whether FLAG_SECURE is ignored for all windows.
+         * @hide
+         */
+        @Readable
+        public static final String WINDOW_IGNORE_SECURE = "window_ignore_secure";
 
         /**
          * Whether to enable DOZE only when charging

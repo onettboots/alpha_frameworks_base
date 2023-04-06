@@ -51,13 +51,12 @@ import com.android.systemui.statusbar.StatusBarBluetoothView;
 import com.android.systemui.statusbar.StatusBarIconView;
 import com.android.systemui.statusbar.StatusBarImsView;
 import com.android.systemui.statusbar.StatusBarMobileView;
-import com.android.systemui.statusbar.StatusBarNetworkTraffic;
+import com.android.systemui.statusbar.StatusBarNetworkTrafficView;
 import com.android.systemui.statusbar.StatusBarWifiView;
 import com.android.systemui.statusbar.StatusIconDisplayable;
 import com.android.systemui.statusbar.connectivity.ImsIconState;
 import com.android.systemui.statusbar.connectivity.ui.MobileContextProvider;
 import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy.BluetoothIconState;
-import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy.NetworkTrafficState;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.CallIndicatorIconState;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.MobileIconState;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.WifiIconState;
@@ -70,6 +69,7 @@ import com.android.systemui.statusbar.pipeline.wifi.ui.WifiUiAdapter;
 import com.android.systemui.statusbar.pipeline.wifi.ui.view.ModernStatusBarWifiView;
 import com.android.systemui.statusbar.pipeline.wifi.ui.viewmodel.LocationBasedWifiViewModel;
 import com.android.systemui.tuner.TunerService;
+import com.android.systemui.statusbar.policy.NetworkTrafficState;
 import com.android.systemui.util.Assert;
 
 import java.util.ArrayList;
@@ -135,9 +135,6 @@ public interface StatusBarIconController {
     /** */
     void setMobileIcons(String slot, List<MobileIconState> states);
 
-    /** */
-    void setNetworkTraffic(String slot, NetworkTrafficState state);
-
     /**
      * This method completely replaces {@link #setMobileIcons} with the information from the new
      * mobile data pipeline. Icons will automatically keep their state up to date, so we don't have
@@ -153,6 +150,11 @@ public interface StatusBarIconController {
      * Display the no calling & SMS icons.
      */
     void setNoCallingIcons(String slot, List<CallIndicatorIconState> states);
+
+    /**
+     * Network traffic indicator icons.
+     */
+    void setNetworkTrafficIcon(String slot, NetworkTrafficState state);
 
     public void setIconVisibility(String slot, boolean b);
 
@@ -529,7 +531,7 @@ public interface StatusBarIconController {
                     return addImsIcon(index, slot, holder.getImsState());
 
                 case TYPE_NETWORK_TRAFFIC:
-                    return addNetworkTraffic(index, slot, holder.getNetworkTrafficState());
+                    return addNetworkTrafficIcon(index, slot, holder.getNetworkTrafficState());
             }
 
             return null;
@@ -640,8 +642,8 @@ public interface StatusBarIconController {
             return view;
         }
 
-        protected StatusBarNetworkTraffic addNetworkTraffic(int index, String slot, NetworkTrafficState state) {
-            StatusBarNetworkTraffic view = onCreateStatusBarNetworkTraffic(slot);
+        protected StatusBarNetworkTrafficView addNetworkTrafficIcon(int index, String slot, NetworkTrafficState state) {
+            StatusBarNetworkTrafficView view = onCreateStatusBarNetworkTrafficView(slot);
             view.applyNetworkTrafficState(state);
             mGroup.addView(view, index, onCreateLayoutParams());
             return view;
@@ -688,9 +690,8 @@ public interface StatusBarIconController {
             return view;
         }
 
-        private StatusBarNetworkTraffic onCreateStatusBarNetworkTraffic(String slot) {
-            StatusBarNetworkTraffic view = StatusBarNetworkTraffic.fromContext(mContext, slot);
-            return view;
+        private StatusBarNetworkTrafficView onCreateStatusBarNetworkTrafficView(String slot) {
+            return StatusBarNetworkTrafficView.fromContext(mContext, slot);
         }
 
         protected LinearLayout.LayoutParams onCreateLayoutParams() {
@@ -745,26 +746,26 @@ public interface StatusBarIconController {
             switch (holder.getType()) {
                 case TYPE_ICON:
                     onSetIcon(viewIndex, holder.getIcon());
-                    return;
+                    break;
                 case TYPE_WIFI:
                     onSetWifiIcon(viewIndex, holder.getWifiState());
-                    return;
+                    break;
                 case TYPE_MOBILE:
                     onSetMobileIcon(viewIndex, holder.getMobileState());
                     return;
                 case TYPE_MOBILE_NEW:
                 case TYPE_WIFI_NEW:
                     // Nothing, the new icons update themselves
-                    return;
+                    break;
                 case TYPE_BLUETOOTH:
                     onSetBluetoothIcon(viewIndex, holder.getBluetoothState());
-                    return;
+                    break;
                 case TYPE_IMS:
                     onSetImsIcon(viewIndex, holder.getImsState());
-                    return;
+                    break;
                 case TYPE_NETWORK_TRAFFIC:
-                    onSetNetworkTraffic(viewIndex, holder.getNetworkTrafficState());
-                    return;
+                    onSetNetworkTrafficIcon(viewIndex, holder.getNetworkTrafficState());
+                    break;
                 default:
                     break;
             }
@@ -817,8 +818,8 @@ public interface StatusBarIconController {
             }
         }
 
-        public void onSetNetworkTraffic(int viewIndex, NetworkTrafficState state) {
-            StatusBarNetworkTraffic view = (StatusBarNetworkTraffic) mGroup.getChildAt(viewIndex);
+        public void onSetNetworkTrafficIcon(int viewIndex, NetworkTrafficState state) {
+            StatusBarNetworkTrafficView view = (StatusBarNetworkTrafficView) mGroup.getChildAt(viewIndex);
             if (view != null) {
                 view.applyNetworkTrafficState(state);
             }

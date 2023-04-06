@@ -74,6 +74,8 @@ import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController.DeviceProvisionedListener;
 import com.android.systemui.statusbar.policy.HotspotController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
+import com.android.systemui.statusbar.policy.NetworkTrafficMonitor;
+import com.android.systemui.statusbar.policy.NetworkTrafficState;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.RotationLockController;
 import com.android.systemui.statusbar.policy.RotationLockController.RotationLockControllerCallback;
@@ -94,8 +96,6 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
-import lineageos.providers.LineageSettings;
-
 /**
  * This class contains all of the policy about which icons are installed in the status bar at boot
  * time. It goes through the normal API for icons, even though it probably strictly doesn't need to.
@@ -109,15 +109,15 @@ public class PhoneStatusBarPolicy
                 DeviceProvisionedListener,
                 KeyguardStateController.Callback,
                 RecordingController.RecordingStateChangeCallback,
+                NetworkTrafficMonitor.Callback,
                 TunerService.Tunable {
     private static final String TAG = "PhoneStatusBarPolicy";
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
     private static final String BLUETOOTH_SHOW_BATTERY =
             "system:" + Settings.System.BLUETOOTH_SHOW_BATTERY;
-    private static final String NETWORK_TRAFFIC_LOCATION =
-            "lineagesecure:" + LineageSettings.Secure.NETWORK_TRAFFIC_LOCATION;
 
+    private final String mSlotNetworkTraffic;
     private final String mSlotCast;
     private final String mSlotHotspot;
     private final String mSlotBluetooth;
@@ -134,7 +134,6 @@ public class PhoneStatusBarPolicy
     private final String mSlotScreenRecord;
     private final String mSlotFirewall;
     private final String mSlotNfc;
-    private final String mSlotNetworkTraffic;
     private final int mDisplayId;
     private final SharedPreferences mSharedPreferences;
     private final DateFormatUtil mDateFormatUtil;
@@ -162,6 +161,7 @@ public class PhoneStatusBarPolicy
     private final SensorPrivacyController mSensorPrivacyController;
     private final RecordingController mRecordingController;
     private final RingerModeTracker mRingerModeTracker;
+    private final NetworkTrafficMonitor mNetworkTrafficMonitor;
 
     private boolean mZenVisible;
     private boolean mVibrateVisible;
@@ -180,8 +180,6 @@ public class PhoneStatusBarPolicy
     private boolean mShowBluetoothBattery;
     private boolean mHideBluetooth;
 
-    private boolean mShowNetworkTraffic;
-
     @Inject
     public PhoneStatusBarPolicy(Context context, StatusBarIconController iconController,
             CommandQueue commandQueue, BroadcastDispatcher broadcastDispatcher,
@@ -197,7 +195,8 @@ public class PhoneStatusBarPolicy
             DevicePolicyManager devicePolicyManager, RecordingController recordingController,
             @Nullable TelecomManager telecomManager, @DisplayId int displayId,
             @Main SharedPreferences sharedPreferences, DateFormatUtil dateFormatUtil,
-            RingerModeTracker ringerModeTracker) {
+            RingerModeTracker ringerModeTracker,
+            NetworkTrafficMonitor NetworkTrafficMonitor) {
         mContext = context;
         mIconController = iconController;
         mCommandQueue = commandQueue;
@@ -223,7 +222,9 @@ public class PhoneStatusBarPolicy
         mUiBgExecutor = uiBgExecutor;
         mTelecomManager = telecomManager;
         mRingerModeTracker = ringerModeTracker;
+        mNetworkTrafficMonitor = NetworkTrafficMonitor;
 
+        mSlotNetworkTraffic = resources.getString(com.android.internal.R.string.status_bar_network_traffic);
         mSlotCast = resources.getString(com.android.internal.R.string.status_bar_cast);
         mSlotHotspot = resources.getString(com.android.internal.R.string.status_bar_hotspot);
         mSlotBluetooth = resources.getString(com.android.internal.R.string.status_bar_bluetooth);
@@ -242,7 +243,6 @@ public class PhoneStatusBarPolicy
                 com.android.internal.R.string.status_bar_screen_record);
         mSlotFirewall = resources.getString(R.string.status_bar_firewall_slot);
         mSlotNfc = resources.getString(com.android.internal.R.string.status_bar_nfc);
-        mSlotNetworkTraffic = resources.getString(com.android.internal.R.string.status_bar_network_traffic);
         mCurrentUserSetup = mProvisionedController.isDeviceProvisioned();
 
         mDisplayId = displayId;
@@ -251,7 +251,6 @@ public class PhoneStatusBarPolicy
 
         Dependency.get(TunerService.class).addTunable(this,
                 BLUETOOTH_SHOW_BATTERY,
-                NETWORK_TRAFFIC_LOCATION,
                 StatusBarIconController.ICON_HIDE_LIST);
     }
 
@@ -342,11 +341,6 @@ public class PhoneStatusBarPolicy
         mIconController.setIconVisibility(mSlotNfc, false);
         updateNfc();
 
-        // network traffic
-        mShowNetworkTraffic = LineageSettings.Secure.getIntForUser(mContext.getContentResolver(),
-            NETWORK_TRAFFIC_LOCATION, 0, UserHandle.USER_CURRENT) == 1;
-        updateNetworkTraffic();
-
         mRotationLockController.addCallback(this);
         mBluetooth.addCallback(this);
         mProvisionedController.addCallback(this);
@@ -362,6 +356,7 @@ public class PhoneStatusBarPolicy
 
         registerNetworkPolicyListener();
 
+        mNetworkTrafficMonitor.addCallback(this);
         mCommandQueue.addCallback(this);
 
         // Get initial user setup state
@@ -391,11 +386,6 @@ public class PhoneStatusBarPolicy
                 mShowBluetoothBattery =
                         TunerService.parseIntegerSwitch(newValue, true);
                 updateBluetooth();
-                break;
-            case NETWORK_TRAFFIC_LOCATION:
-                mShowNetworkTraffic =
-                        TunerService.parseInteger(newValue, 0) == 1;
-                updateNetworkTraffic();
                 break;
             case StatusBarIconController.ICON_HIDE_LIST:
                 ArraySet<String> hideList = StatusBarIconController.getIconHideList(mContext, newValue);
@@ -527,11 +517,6 @@ public class PhoneStatusBarPolicy
 
         mIconController.setBluetoothIcon(mSlotBluetooth,
                 new BluetoothIconState(!mHideBluetooth && bluetoothVisible, batteryLevel, contentDescription));
-    }
-
-    private final void updateNetworkTraffic() {
-        mIconController.setNetworkTraffic(mSlotNetworkTraffic, new NetworkTrafficState(mShowNetworkTraffic));
-        mIconController.setIconVisibility(mSlotNetworkTraffic, mShowNetworkTraffic);
     }
 
     private final void updateTTY() {
@@ -898,16 +883,8 @@ public class PhoneStatusBarPolicy
         }
     }
 
-    public static class NetworkTrafficState {
-        public boolean visible;
-
-        public NetworkTrafficState(boolean visible) {
-            this.visible = visible;
-        }
-
-        @Override
-        public String toString() {
-            return "NetworkTrafficState(visible=" + visible + ")";
-        }
+    @Override
+    public void onTrafficUpdate(NetworkTrafficState state) {
+        mIconController.setNetworkTrafficIcon(mSlotNetworkTraffic, state);
     }
 }

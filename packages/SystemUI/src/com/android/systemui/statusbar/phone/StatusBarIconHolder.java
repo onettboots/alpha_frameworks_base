@@ -25,11 +25,11 @@ import android.os.UserHandle;
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.systemui.statusbar.connectivity.ImsIconState;
 import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy.BluetoothIconState;
-import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy.NetworkTrafficState;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.CallIndicatorIconState;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.MobileIconState;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.WifiIconState;
 import com.android.systemui.statusbar.pipeline.mobile.ui.viewmodel.MobileIconViewModel;
+import com.android.systemui.statusbar.policy.NetworkTrafficState;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
