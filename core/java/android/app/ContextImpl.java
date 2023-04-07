@@ -2271,6 +2271,12 @@ class ContextImpl extends Context {
             return PERMISSION_DENIED;
         }
 
+        if (GmsCompat.isEnabled()) {
+            if (GmsHooks.shouldSpoofSelfPermissionCheck(permission)) {
+                return PERMISSION_GRANTED;
+            }
+        }
+
         return checkPermission(permission, Process.myPid(), Process.myUid());
     }
 
