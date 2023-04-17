@@ -68,6 +68,7 @@ import static android.net.INetd.FIREWALL_RULE_DENY;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_NOT_METERED;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_NOT_ROAMING;
 import static android.net.NetworkCapabilities.TRANSPORT_CELLULAR;
+import static android.net.NetworkCapabilities.TRANSPORT_USB;
 import static android.net.NetworkCapabilities.TRANSPORT_VPN;
 import static android.net.NetworkCapabilities.TRANSPORT_WIFI;
 import static android.net.NetworkPolicy.LIMIT_DISABLED;
@@ -88,6 +89,8 @@ import static android.net.NetworkPolicyManager.ALLOWED_REASON_TOP;
 import static android.net.NetworkPolicyManager.EXTRA_NETWORK_TEMPLATE;
 import static android.net.NetworkPolicyManager.FIREWALL_RULE_DEFAULT;
 import static android.net.NetworkPolicyManager.POLICY_ALLOW_METERED_BACKGROUND;
+import static android.net.NetworkPolicyManager.POLICY_LOCKDOWN_VPN;
+import static android.net.NetworkPolicyManager.POLICY_LOCKDOWN_VPN_MASK;
 import static android.net.NetworkPolicyManager.POLICY_NONE;
 import static android.net.NetworkPolicyManager.POLICY_REJECT_ALL;
 import static android.net.NetworkPolicyManager.POLICY_REJECT_CELLULAR;
@@ -653,9 +656,6 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
     /** Map from network ID to the last ifaces on it */
     @GuardedBy("mNetworkPoliciesSecondLock")
     private SparseSetArray<String> mNetworkToIfaces = new SparseSetArray<>();
-    /** Map from network ID to last observed transports state */
-    @GuardedBy("mNetworkPoliciesSecondLock")
-    private final SparseArray<int[]> mNetworkTransports = new SparseArray<>();
 
     /** Map from netId to subId as of last update */
     @GuardedBy("mNetworkPoliciesSecondLock")
@@ -1106,21 +1106,21 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                     ACTION_CARRIER_CONFIG_CHANGED);
             mContext.registerReceiver(mCarrierConfigReceiver, carrierConfigFilter, null, mHandler);
 
-            for (UserInfo userInfo : mUserManager.getAliveUsers()) {
-                mConnManager.registerDefaultNetworkCallbackForUid(
-                        UserHandle.getUid(userInfo.id, Process.myUid()),
-                        mDefaultNetworkCallback,
-                        mUidEventHandler
-                );
-            }
-
             // listen for meteredness changes
             mConnManager.registerNetworkCallback(
                     new NetworkRequest.Builder().build(), mNetworkCallback);
 
+            // Set up the firewall for any persistent VPN lockdown UIDs.
+            try {
+                mConnManager.setRequireVpnForUids(true, getUidsWithLockdownPolicy());
+            } catch (RuntimeException e) {
+                Slog.wtf(TAG, "initService: setRequireVpnForUids failed", e);
+            }
+
             mAppStandby.addListener(new NetPolicyAppIdleStateChangeListener());
             synchronized (mUidRulesFirstLock) {
                 updateRulesForAppIdleParoleUL();
+                sendUidsAllowedTransportsUL();
             }
 
             // Listen for subscriber changes
@@ -1140,6 +1140,47 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
             Process.setThreadPriority(oldPriority);
             Trace.traceEnd(Trace.TRACE_TAG_NETWORK);
         }
+    }
+
+    // sync with NetworkCapabilities
+    private static final int MIN_TRANSPORT = TRANSPORT_CELLULAR;
+    private static final int MAX_TRANSPORT = TRANSPORT_USB;
+    private static final int ALL_VALID_TRANSPORTS;
+    static {
+        int transports = 0;
+        for (int i = MIN_TRANSPORT; i <= MAX_TRANSPORT; ++i) {
+            transports |= 1 << i;
+        }
+        ALL_VALID_TRANSPORTS = transports;
+    }
+
+    private static int getAllowedTransportsPackedForUidPolicy(int policy) {
+        int allowedTransports = ALL_VALID_TRANSPORTS;
+        // Where policy rejects a transport, remove the flags that allow it.
+        if ((policy & POLICY_REJECT_VPN) == POLICY_REJECT_VPN) {
+            allowedTransports &= ~(1 << TRANSPORT_VPN);
+        }
+        if ((policy & POLICY_REJECT_WIFI) == POLICY_REJECT_WIFI) {
+            allowedTransports &= ~(1 << TRANSPORT_WIFI);
+        }
+        if ((policy & POLICY_REJECT_CELLULAR) == POLICY_REJECT_CELLULAR) {
+            allowedTransports &= ~(1 << TRANSPORT_CELLULAR);
+        }
+        return allowedTransports;
+    }
+
+    @GuardedBy("mUidRulesFirstLock")
+    public void sendUidsAllowedTransportsUL() {
+        final int size = mUidPolicy.size();
+        final int[] uids = new int[size];
+        final long[] allowedTransportsPacked = new long[size];
+        for (int i = 0; i < size; i++) {
+            final int uid = mUidPolicy.keyAt(i);
+            final int policy = mUidPolicy.valueAt(i);
+            uids[i] = uid;
+            allowedTransportsPacked[i] = getAllowedTransportsPackedForUidPolicy(policy);
+        }
+        mConnManager.setUidsAllowedTransports(uids, allowedTransportsPacked);
     }
 
     public CountDownLatch networkScoreAndNetworkManagementServiceReady() {
@@ -1304,11 +1345,6 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                                 ConnectivitySettingsManager.getUidsAllowedOnRestrictedNetworks(
                                         mContext);
                         if (action == ACTION_USER_ADDED) {
-                            mConnManager.registerDefaultNetworkCallbackForUid(
-                                    UserHandle.getUid(userId, Process.myUid()),
-                                    mDefaultNetworkCallback,
-                                    mUidEventHandler
-                            );
                             // Add apps that are allowed by default.
                             addDefaultRestrictBackgroundAllowlistUidsUL(userId);
                             try {
@@ -1432,35 +1468,6 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         }
         return changed;
     }
-
-    private static boolean updateTransportChange(SparseArray<int[]> lastValues, int[] newValue,
-            Network network) {
-        final int[] lastValue = lastValues.get(network.getNetId(), new int[]{});
-        final boolean changed = (!Arrays.equals(lastValue, newValue))
-                || lastValues.indexOfKey(network.getNetId()) < 0;
-        if (changed) {
-            lastValues.put(network.getNetId(), newValue);
-        }
-        return changed;
-    }
-
-    private final NetworkCallback mDefaultNetworkCallback = new NetworkCallback() {
-        @Override
-        public void onAvailable(@NonNull Network network) {
-            updateRestrictedModeAllowlistUL();
-        }
-
-        @Override
-        public void onCapabilitiesChanged(@NonNull Network network,
-                @NonNull NetworkCapabilities networkCapabilities) {
-            final int[] newTransports = networkCapabilities.getTransportTypes();
-            final boolean transportsChanged = updateTransportChange(
-                    mNetworkTransports, newTransports, network);
-            if (transportsChanged) {
-                updateRestrictedModeAllowlistUL();
-            }
-        }
-    };
 
     private final NetworkCallback mNetworkCallback = new NetworkCallback() {
         @Override
@@ -3122,9 +3129,46 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         }
     }
 
+    private static boolean isLockdownPolicy(final int policy) {
+        return (policy & POLICY_LOCKDOWN_VPN_MASK) == POLICY_LOCKDOWN_VPN;
+    }
+
+    @NonNull
+    private List<Range<Integer>> getUidsWithLockdownPolicy() {
+        var ranges = new ArrayList<Range<Integer>>();
+        synchronized (mUidRulesFirstLock) {
+            for (int i = 0; i < mUidPolicy.size(); i++) {
+                final int uid = mUidPolicy.keyAt(i);
+                final int uidPolicy = mUidPolicy.valueAt(i);
+                if (isLockdownPolicy(uidPolicy)) {
+                    ranges.add(new Range<>(uid, uid));
+                }
+            }
+        }
+        return ranges;
+    }
+
     @GuardedBy("mUidRulesFirstLock")
     private void setUidPolicyUncheckedUL(int uid, int oldPolicy, int policy, boolean persist) {
         setUidPolicyUncheckedUL(uid, policy, false);
+        final boolean wasLockdown = isLockdownPolicy(oldPolicy);
+        final boolean isLockdown = isLockdownPolicy(policy);
+        if (wasLockdown != isLockdown) {
+            try {
+                mConnManager.setRequireVpnForUids(isLockdown, List.of(new Range<>(uid, uid)));
+            } catch (RuntimeException e) {
+                Slog.wtf(TAG, "setUidPolicyUncheckedUL: Setting VPN " + (isLockdown ? "required "
+                        : "not required") + " failed for uid " + uid, e);
+            }
+        }
+
+        final long lastAllowedTransportsPacked = getAllowedTransportsPackedForUidPolicy(oldPolicy);
+        final long allowedTransportsPacked = getAllowedTransportsPackedForUidPolicy(policy);
+
+        if (lastAllowedTransportsPacked != allowedTransportsPacked) {
+            mConnManager.setUidsAllowedTransports(new int[] { uid },
+                    new long[] { allowedTransportsPacked });
+        }
 
         final boolean notifyApp;
         if (!isUidValidForAllowlistRulesUL(uid)) {
@@ -4523,44 +4567,13 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
             // TODO: this needs to be kept in sync with
             // PermissionMonitor#hasRestrictedNetworkPermission
             // Check for restricted-networking-mode status
-            final boolean isUidAllowedOnRestrictedNetworks =
-                    ConnectivitySettingsManager.getUidsAllowedOnRestrictedNetworks(mContext)
+            return ConnectivitySettingsManager.getUidsAllowedOnRestrictedNetworks(mContext)
                     .contains(uid)
                     || mIPm.checkUidPermission(CONNECTIVITY_USE_RESTRICTED_NETWORKS, uid)
                     == PERMISSION_GRANTED
                     || mIPm.checkUidPermission(NETWORK_STACK, uid) == PERMISSION_GRANTED
                     || mIPm.checkUidPermission(PERMISSION_MAINLINE_NETWORK_STACK, uid)
                     == PERMISSION_GRANTED;
-
-            // Check for other policies (data-restrictions)
-            final long token = Binder.clearCallingIdentity();
-            NetworkCapabilities nc;
-            try {
-                nc = mConnManager.getNetworkCapabilities(mConnManager.getActiveNetwork());
-            } finally {
-                Binder.restoreCallingIdentity(token);
-            }
-            boolean isUidRestrictedByPolicy = false;
-            if (isUidAllowedOnRestrictedNetworks && nc != null) {
-                int policy = getUidPolicy(uid);
-                final boolean isUidAllowedOnVpn = nc.hasTransport(TRANSPORT_VPN)
-                        && ((policy & POLICY_REJECT_VPN) == 0);
-                if (!isUidAllowedOnVpn) {
-                    final boolean isUidRestrictedOnCell = nc.hasTransport(TRANSPORT_CELLULAR)
-                            && ((policy & POLICY_REJECT_CELLULAR) != 0);
-                    final boolean isUidRestrictedOnVpn = nc.hasTransport(TRANSPORT_VPN)
-                            && ((policy & POLICY_REJECT_VPN) != 0);
-                    final boolean isUidRestrictedOnWifi = nc.hasTransport(TRANSPORT_WIFI)
-                            && ((policy & POLICY_REJECT_WIFI) != 0);
-                    if (isUidRestrictedOnVpn || isUidRestrictedOnCell || isUidRestrictedOnWifi) {
-                            isUidRestrictedByPolicy = true;
-                    }
-                }
-            }
-            // If app is restricted (aka not on the allowlist), it's not allowed to use the internet
-            // If it is on the allowlist, then we also check its networking is not blocked
-            // (aka active network is not null) and then other policies
-            return isUidAllowedOnRestrictedNetworks && !isUidRestrictedByPolicy;
         } catch (RemoteException e) {
             return false;
         }
@@ -6268,7 +6281,8 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
 
         mStatLogger.logDurationStat(Stats.IS_UID_NETWORKING_BLOCKED, startTime);
 
-        return blockedReasons != BLOCKED_REASON_NONE;
+        return blockedReasons != BLOCKED_REASON_NONE
+                || mConnManager.isUidCurrentlyDisallowedByPolicy(uid);
     }
 
     @Override
