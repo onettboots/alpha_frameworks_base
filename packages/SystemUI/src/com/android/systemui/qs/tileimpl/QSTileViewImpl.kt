@@ -192,6 +192,8 @@ open class QSTileViewImpl @JvmOverloads constructor(
     private var labelHide = false
     private var labelSize = 14f
 
+    private var shouldVibrateOnTouch = false;
+
     init {
         setId(generateViewId())
 
@@ -209,9 +211,15 @@ open class QSTileViewImpl @JvmOverloads constructor(
         val iconSize = resources.getDimensionPixelSize(R.dimen.qs_icon_size)
         addView(_icon, LayoutParams(iconSize, iconSize))
 
+        shouldVibrateOnTouch = isHapticFeedbackEnabled()
         createAndAddLabels()
         createAndAddSideView()
         updateResources()
+    }
+
+    override fun isHapticFeedbackEnabled(): Boolean {
+        return (System.getIntForUser(context.contentResolver,
+            System.QS_HAPTIC_FEEDBACK, 0, UserHandle.USER_CURRENT) == 1)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -365,10 +373,12 @@ open class QSTileViewImpl @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-        } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-            performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+        if (shouldVibrateOnTouch) {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+            }
         }
         return super.onTouchEvent(event)
     }
