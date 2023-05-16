@@ -114,5 +114,5 @@
     <dimen name="amb_font_base_multiplier_dp">1dp</dimen>
 
     <!-- QS Header height full -->
-    <dimen name="qs_header_height_full">200dp</dimen>
+    <dimen name="qs_header_height_full">130dp</dimen>
 </resources>
