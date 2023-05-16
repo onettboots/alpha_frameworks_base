@@ -3231,6 +3231,8 @@ package android.content.pm {
     method @NonNull public static android.content.pm.GosPackageState.Editor edit(@NonNull String);
     method @Nullable public static android.content.pm.GosPackageState get(@NonNull String);
     method @Nullable public static android.content.pm.GosPackageState getForSelf();
+    method @NonNull public static android.content.pm.GosPackageState getOrDefault(@NonNull String);
+    method @NonNull public static android.content.pm.GosPackageState getOrDefault(@NonNull String, int);
     method public boolean hasDerivedFlag(int);
     method public boolean hasDerivedFlags(int);
     method public boolean hasFlag(int);
