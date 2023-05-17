@@ -28,8 +28,8 @@
     <!-- Pocket Lock -->
     <string name="pocket_lock_message_long_press">Pulse y mantenga el botón de encendido para desbloquear</string>
     <string name="pocket_view_title">Modo bolsillo activado</string>
-    <string name="pocket_view_title_cancel">Para usar su teléfono:</string>
-    <string name="pocket_view_top_tag_cancel">Compruebe si la zona azul de su teléfono está libre de cualquier obstrucción, y limpie cualquier suciedad o polvo.</string>
+    <string name="pocket_view_title_cancel">Para activar su teléfono:</string>
+    <string name="pocket_view_top_tag_cancel">Por favor no cubra el área azul de su teléfono y limpie cualquier suciedad o polvo.</string>
     <string name="pocket_view_top_tag_cancel2">Mantenga pulsado el botón encendido para forzar el apagado del modo bolsillo.</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>

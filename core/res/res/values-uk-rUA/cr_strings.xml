@@ -29,8 +29,8 @@
     <!-- Pocket Lock -->
     <string name="pocket_lock_message_long_press">Нажміть і утримуйте кнопку живлення, щоб розблокувати</string>
     <string name="pocket_view_title">Режим \"У кишені\" увімкнено</string>
-    <string name="pocket_view_title_cancel">Щоб користуватися телефоном:</string>
-    <string name="pocket_view_top_tag_cancel">Перевірте, чи над синьою ділянкою телефону немає перешкод, і очистіть від бруду чи пилу.</string>
+    <string name="pocket_view_title_cancel">Для активації телефону:</string>
+    <string name="pocket_view_top_tag_cancel">Перевірте, чи синя зона на телефоні нічим не перекрита, а також очистіть її від будь-якого бруду.</string>
     <string name="pocket_view_top_tag_cancel2">Натисніть й утримуйте кнопку живлення, щоб примусово вийти з режиму \"У кишені\".</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>

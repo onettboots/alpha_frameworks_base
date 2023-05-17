@@ -157,6 +157,7 @@ public class PixelPropsUtils {
 
     // Codenames for currently supported Pixels by Google
     private static final String[] pixelCodenames = {
+            "lynx",
             "cheetah",
             "panther",
             "bluejay",
@@ -247,7 +248,7 @@ public class PixelPropsUtils {
                     if (isPixelDevice) return;
                     propsToChange.putAll(propsToChangePixel5);
                 }
-            } else if (packageName.equals("com.netflix.mediaclient") && 
+            } else if (packageName.equals("com.netflix.mediaclient") &&
                         !SystemProperties.getBoolean("persist.sys.pixelprops.netflix", false)) {
                     if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
                     return;

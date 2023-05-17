@@ -29,8 +29,8 @@
     <!-- Pocket Lock -->
     <string name="pocket_lock_message_long_press">Πατήστε και κρατήστε πατημένο το κουμπί λειτουργίας για ξεκλείδωμα</string>
     <string name="pocket_view_title">Η λειτουργία τσέπης είναι ενεργοποιημένη</string>
-    <string name="pocket_view_title_cancel">Για να χρησιμοποιήσετε το τηλέφωνό σας:</string>
-    <string name="pocket_view_top_tag_cancel">Ελέγξτε εάν η μπλε περιοχή του τηλεφώνου σας είναι καθαρή από τυχόν εμπόδια, και καθαρίστε τη βρωμιά ή τη σκόνη.</string>
+    <string name="pocket_view_title_cancel">Για να ενεργοποιήσετε το τηλέφωνό σας:</string>
+    <string name="pocket_view_top_tag_cancel">Παρακαλούμε μην καλύπτετε την μπλε περιοχή του τηλεφώνου σας και αφαιρέστε οποιαδήποτε βρωμιά ή σκόνη από αυτό.</string>
     <string name="pocket_view_top_tag_cancel2">Πατήστε παρατεταμένα το κουμπί λειτουργίας για αναγκαστική έξοδο από τη λειτουργία τσέπης.</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>

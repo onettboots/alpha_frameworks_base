@@ -29,8 +29,8 @@
     <!-- Pocket Lock -->
     <string name="pocket_lock_message_long_press">Avamiseks vajutage ja hoidke all toitenuppu</string>
     <string name="pocket_view_title">Taskurežiim on sees</string>
-    <string name="pocket_view_title_cancel">Telefoni kasutamiseks:</string>
-    <string name="pocket_view_top_tag_cancel">Kontrolli, et sinu telefoni sinine ala on takistustest vaba ning eemalda mistahes tolm või mustus.</string>
+    <string name="pocket_view_title_cancel">To activate your phone:</string>
+    <string name="pocket_view_top_tag_cancel">Please do not cover the blue area of your phone and clear any dirt or dust off it.</string>
     <string name="pocket_view_top_tag_cancel2">Taskurežiimist sundväljumiseks vajuta pikalt toitenuppu.</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>

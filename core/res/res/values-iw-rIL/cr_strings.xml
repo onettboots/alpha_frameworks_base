@@ -31,8 +31,8 @@
     <!-- Pocket Lock -->
     <string name="pocket_lock_message_long_press">לחיצה ארוכה על כפתור ההפעלה לביטול הנעילה</string>
     <string name="pocket_view_title">מצב כיס מופעל</string>
-    <string name="pocket_view_title_cancel">לשימוש בטלפון שלך:</string>
-    <string name="pocket_view_top_tag_cancel">יש לבצע בדיקה אם האזור הכחול במכשיר שלך נקי מהפרעות ולנקות כל לכלוך או אבק.</string>
+    <string name="pocket_view_title_cancel">להפעלת המכשיר שלך:</string>
+    <string name="pocket_view_top_tag_cancel">בבקשה לא לכסות את האזור הכחול של הטלפון שלך ולוודא שיהיה נקי מכל אבק ולכלוך.</string>
     <string name="pocket_view_top_tag_cancel2">לחיצה ארוכה על כפתור ההפעלה כדי לכפות יציאה ממצב כיס.</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>

@@ -29,8 +29,8 @@
     <!-- Pocket Lock -->
     <string name="pocket_lock_message_long_press">Натиснете и задръжте бутона за включване, за да отключите</string>
     <string name="pocket_view_title">Джобен режим е включен</string>
-    <string name="pocket_view_title_cancel">За да използвате телефона:</string>
-    <string name="pocket_view_top_tag_cancel">Проверете дали синята зона на телефона ви е чиста</string>
+    <string name="pocket_view_title_cancel">To activate your phone:</string>
+    <string name="pocket_view_top_tag_cancel">Please do not cover the blue area of your phone and clear any dirt or dust off it.</string>
     <string name="pocket_view_top_tag_cancel2">Натиснете и задръжте бутона за изключване за да премахнете \"джобният режим\"</string>
     <string name="pocket_view_top_tag_number1"></string>
     <string name="pocket_view_top_tag_number2"></string>

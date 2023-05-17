@@ -29,7 +29,7 @@
     <string name="pocket_lock_message_long_press">Kilidi açmak için güç tuşuna basın ve basılı tutun</string>
     <string name="pocket_view_title">Cep modu açık</string>
     <string name="pocket_view_title_cancel">Telefonunuzu kullanmak için:</string>
-    <string name="pocket_view_top_tag_cancel">Telefonunuzun mavi alanında herhangi bir engel olup olmadığını kontrol edin ve herhangi bir kiri veya tozu temizleyin.</string>
+    <string name="pocket_view_top_tag_cancel">Telefonunuzun mavi alanında herhangi bir engel olup olmadığını kontrol edin ve herhangi bir kir veya toz varsa temizleyin.</string>
     <string name="pocket_view_top_tag_cancel2">Cep modundan çıkmak için güç düğmesine basılı tutun.</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>

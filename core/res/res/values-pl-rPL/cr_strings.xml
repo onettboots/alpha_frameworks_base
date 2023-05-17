@@ -29,7 +29,7 @@
     <string name="pocket_lock_message_long_press">Naciśnij i przytrzymaj przycisk zasilania aby odblokować</string>
     <string name="pocket_view_title">Tryb kieszeniowy jest włączony</string>
     <string name="pocket_view_title_cancel">Aby aktywować swój telefon:</string>
-    <string name="pocket_view_top_tag_cancel">Sprawdź, czy niebieska część telefonu jest czysta i nie jest przysłonięta.</string>
+    <string name="pocket_view_top_tag_cancel">Nie zakrywaj niebieskiego obszaru Twojego telefonu, i usuń wszelkie zabrudzenia lub kurz.</string>
     <string name="pocket_view_top_tag_cancel2">Przytrzymaj przycisk zasilania, aby wymusić wyjście z trybu kieszonkowego.</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>

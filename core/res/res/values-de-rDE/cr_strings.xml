@@ -28,8 +28,8 @@
     <!-- Pocket Lock -->
     <string name="pocket_lock_message_long_press">Zum Entsperren Ein-/Aus-Taste gedrückt halten</string>
     <string name="pocket_view_title">Taschenmodus aktiviert</string>
-    <string name="pocket_view_title_cancel">Um das Gerät zu verwenden:</string>
-    <string name="pocket_view_top_tag_cancel">Vergewissere dich, dass die blau dargestellte Zone nicht blockiert ist und reinige sie gegebenenfalls.</string>
+    <string name="pocket_view_title_cancel">Zum Aktivieren des Telefons:</string>
+    <string name="pocket_view_top_tag_cancel">Bitte den blau hinterlegten Bereich freihalten und ggf. Schmutz und Staub entfernen.</string>
     <string name="pocket_view_top_tag_cancel2">Ein-/Aus-Taste gedrückt halten, um den Taschenmodus zu beenden.</string>
     <string name="pocket_view_top_tag_number1">1.\u0020</string>
     <string name="pocket_view_top_tag_number2">2.\u0020</string>
