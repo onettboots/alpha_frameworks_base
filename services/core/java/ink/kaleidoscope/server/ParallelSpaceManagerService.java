@@ -82,6 +82,21 @@ public final class ParallelSpaceManagerService extends SystemService {
 
     private static final String TAG = "ParallelSpaceManagerService";
 
+    static final String[] GMS_PACKAGES =
+    {
+        "com.android.vending",
+        "com.google.android.gms",
+        "com.google.android.gms.policy_sidecar_aps",
+        "com.google.android.gsf",
+        "com.google.android.projection.gearhead",
+        "com.google.android.syncadapters.calendar",
+        "com.google.android.syncadapters.contacts",
+        "com.google.android.apps.wellbeing",
+        "com.google.android.syncadapters.contacts",
+        "com.google.android.soundpicker",
+        "com.google.android.settings.intelligence"
+    };
+
     /**
      * By default, only non-launchable system apps will be initially installed in
      * a new space. Here you can explicitly configure for this.
@@ -457,7 +472,7 @@ public final class ParallelSpaceManagerService extends SystemService {
         apps.removeAll(Arrays.asList(getContext().getResources().getStringArray(
                 com.android.internal.R.array.config_parallelSpaceWhitelist)));
         // Those packages should be handled by GmsManagerService, always install them.
-        apps.removeAll(Arrays.asList(GmsManagerService.GMS_PACKAGES));
+        apps.removeAll(Arrays.asList(GMS_PACKAGES));
         apps.addAll(SPACE_BLOCKLIST_PACKAGES);
         apps.addAll(Arrays.asList(getContext().getResources().getStringArray(
                 com.android.internal.R.array.config_parallelSpaceBlocklist)));
